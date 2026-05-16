@@ -36,14 +36,13 @@ export default function Home() {
             variants={staggerContainer}
             className="max-w-4xl"
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-secondary/30 bg-background/50 backdrop-blur-md mb-8">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-              <span className="text-secondary font-mono text-xs font-bold tracking-widest uppercase">Powered by OSA Media</span>
+            <motion.div variants={fadeInUp} className="mb-6">
+              <img
+                src="/orale-logo.png"
+                alt="Órale Network"
+                className="w-72 md:w-96 object-contain"
+              />
             </motion.div>
-            
-            <motion.h1 variants={fadeInUp} className="text-6xl md:text-8xl font-bold font-display leading-[0.9] text-white mb-6">
-              ÓRALE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">WORLD-WIDE</span><br/>PORTAL
-            </motion.h1>
             
             <motion.p variants={fadeInUp} className="text-xl md:text-2xl text-muted-foreground font-sans max-w-2xl mb-12 leading-relaxed">
               The gateway to a world of content, community advocacy, and business elevation. Elite affordable consulting meets multimedia streaming.
@@ -222,8 +221,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 mb-16 border-b border-white/10 pb-16">
             <div>
-              <h2 className="text-6xl font-display font-bold text-white mb-2">ÓRALE</h2>
-              <p className="text-xl text-primary font-display uppercase tracking-widest mb-8">Powered by OSA Media</p>
+              <img src="/orale-logo.png" alt="Órale Network" className="w-48 object-contain mb-6" />
               <div className="flex gap-4">
                 <div className="w-12 h-12 border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer">X</div>
                 <div className="w-12 h-12 border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors cursor-pointer">IG</div>
