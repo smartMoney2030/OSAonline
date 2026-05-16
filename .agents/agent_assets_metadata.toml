@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "4ukeUizTmrYRKv5am3ep2"
+uri = "file://artifacts/orale-portal/src/assets/images/hero.png"
+type = "image"
+title = "Cinematic broadcast studio hero background"
+
+[[generated]]
+id = "Q7EVe413qHUELunLYS4fm"
+uri = "file://artifacts/orale-portal/src/assets/images/media-bg.png"
+type = "image"
+title = "Multimedia streaming equipment abstract"
+
+[[generated]]
+id = "aKrQMaB3eOEuHNkos5jkX"
+uri = "file://artifacts/orale-portal/src/assets/images/robles-law.png"
+type = "image"
+title = "Veteran law firm sponsor visual"
+
+[[generated]]
+id = "ZqUtqo2Ebli-k_d_PIR0X"
+uri = "file://artifacts/orale-portal/src/assets/images/dogwood-health.png"
+type = "image"
+title = "Home healthcare sponsor visual"
