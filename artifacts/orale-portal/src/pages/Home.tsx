@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Play, Radio, MonitorPlay } from "lucide-react";
+import { Link } from "wouter";
 import heroBg from "@/assets/images/hero.png";
 import mediaBg from "@/assets/images/media-bg.png";
 import roblesLaw from "@/assets/images/robles-law.png";
@@ -8,7 +9,7 @@ import dogwoodHealth from "@/assets/images/dogwood-health.png";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } }
 };
 
 const staggerContainer = {
@@ -236,6 +237,8 @@ export default function Home() {
                   <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
                   <li><a href="#" className="hover:text-white transition-colors">Consulting</a></li>
                   <li><a href="#" className="hover:text-white transition-colors">Sponsorships</a></li>
+                  <li><Link href="/business-corner" className="hover:text-white transition-colors">Business Corner</Link></li>
+                  <li><Link href="/events" className="hover:text-white transition-colors">Events</Link></li>
                 </ul>
               </div>
               <div>
