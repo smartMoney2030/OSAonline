@@ -94,14 +94,18 @@ export default function Home() {
             
             <div className="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6">
               {[
-                { title: "ROKU TV", desc: "Global streaming access bringing San Antonio soul to the world.", icon: <MonitorPlay size={32} className="text-primary" /> },
-                { title: "Órale TV Shows", desc: "Original programming, authentic stories, zero compromises.", icon: <Play size={32} className="text-secondary" /> },
-                { title: "OSA Radio Station", desc: "The heartbeat of the streets. Raw, unfiltered, always on.", icon: <Radio size={32} className="text-white" /> }
+                { title: "ROKU TV", desc: "Global streaming access bringing San Antonio soul to the world.", icon: <MonitorPlay size={32} className="text-primary" />, href: null },
+                { title: "Órale TV Shows", desc: "Original programming, authentic stories, zero compromises.", icon: <Play size={32} className="text-secondary" />, href: null },
+                { title: "OSA Radio Station", desc: "The heartbeat of the streets. Raw, unfiltered, always on.", icon: <Radio size={32} className="text-white" />, href: "https://aistudio.google.com/apps/eefe2d01-2f86-4c0f-9c85-d538e6277d55" }
               ].map((item, i) => (
-                <motion.div key={i} variants={fadeInUp} className="p-8 bg-card border border-white/5 hover:border-primary/50 transition-colors group">
+                <motion.div key={i} variants={fadeInUp}
+                  className={`p-8 bg-card border border-white/5 hover:border-primary/50 transition-colors group${item.href ? " cursor-pointer" : ""}`}
+                  onClick={item.href ? () => window.open(item.href!, "_blank", "noopener,noreferrer") : undefined}
+                >
                   <div className="mb-6">{item.icon}</div>
                   <h4 className="text-2xl font-display text-white mb-3 group-hover:text-secondary transition-colors">{item.title}</h4>
                   <p className="text-muted-foreground">{item.desc}</p>
+                  {item.href && <p className="text-primary text-xs font-mono uppercase tracking-widest mt-4">Listen Live →</p>}
                 </motion.div>
               ))}
             </div>
