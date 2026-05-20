@@ -206,7 +206,7 @@ export default function Home() {
             <motion.p variants={fadeInUp} className="text-xl text-muted-foreground mb-10">
               We are building the tools to automate content distribution, personalize streaming experiences, and provide intelligent marketing analytics to our partners.
             </motion.p>
-            <motion.button variants={fadeInUp} className="text-white border-b border-white/30 pb-1 hover:border-white transition-colors uppercase tracking-widest text-sm font-bold">
+            <motion.button variants={fadeInUp} onClick={() => setContactOpen(true)} className="text-white border-b border-white/30 pb-1 hover:border-white transition-colors uppercase tracking-widest text-sm font-bold">
               Join the Waitlist
             </motion.button>
           </motion.div>
@@ -224,7 +224,7 @@ export default function Home() {
               <motion.p variants={fadeInUp} className="text-lg text-muted-foreground mb-8">
                 Órale is built on a foundation of community advocacy. We use our platforms to uplift local voices, support minority-owned businesses, and drive cultural initiatives forward across San Antonio and Texas.
               </motion.p>
-              <motion.button variants={fadeInUp} className="px-6 py-3 bg-white text-black font-bold font-display uppercase tracking-wider hover:bg-gray-200 transition-colors">
+              <motion.button variants={fadeInUp} onClick={() => setContactOpen(true)} className="px-6 py-3 bg-white text-black font-bold font-display uppercase tracking-wider hover:bg-gray-200 transition-colors">
                 Get Involved
               </motion.button>
             </motion.div>
