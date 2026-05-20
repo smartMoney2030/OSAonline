@@ -9,6 +9,8 @@ import BusinessCorner from "@/pages/BusinessCorner";
 import Events from "@/pages/Events";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import Privacy from "@/pages/Privacy";
+import Terms from "@/pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -107,6 +109,8 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/business-corner" component={BusinessCorner} />
         <Route path="/events" component={Events} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/terms" component={Terms} />
         <Route path="/admin" component={AdminLogin} />
         <Route path="/admin/dashboard" component={AdminDashboard} />
         <Route component={NotFound} />
