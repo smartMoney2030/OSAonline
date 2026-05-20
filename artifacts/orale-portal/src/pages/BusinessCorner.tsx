@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Mail, Phone, ExternalLink, Loader2 } from "lucide-react";
-import { getPublicBusinesses, type Business } from "@/lib/adminApi";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Phone, ExternalLink, Loader2, X, CheckCircle2 } from "lucide-react";
+import { getPublicBusinesses, submitBusinessListing, type Business } from "@/lib/adminApi";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -12,6 +12,226 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
 };
+
+const CITY_ORDER = ["San Antonio", "Austin", "Houston", "DFW", "Rio Grande Valley"];
+
+// ---- Get Listed Modal ----
+
+interface GetListedModalProps {
+  onClose: () => void;
+}
+
+const EMPTY_FORM = {
+  businessName: "",
+  contactName: "",
+  phone: "",
+  email: "",
+  city: "",
+  websiteUrl: "",
+  description: "",
+};
+
+function GetListedModal({ onClose }: GetListedModalProps) {
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  function handleOverlayClick(e: React.MouseEvent) {
+    if (e.target === overlayRef.current) onClose();
+  }
+
+  function set(field: keyof typeof EMPTY_FORM) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm(prev => ({ ...prev, [field]: e.target.value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    try {
+      await submitBusinessListing({
+        businessName: form.businessName.trim(),
+        contactName: form.contactName.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        city: form.city,
+        websiteUrl: form.websiteUrl.trim() || null,
+        description: form.description.trim() || null,
+      });
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Submission failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputClass =
+    "w-full bg-[#1a1a1a] border border-white/10 text-white placeholder-white/30 px-4 py-3 rounded-sm text-sm focus:outline-none focus:border-primary/60 transition-colors";
+  const labelClass = "block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1.5";
+
+  return (
+    <div
+      ref={overlayRef}
+      onClick={handleOverlayClick}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.25 }}
+        className="relative w-full max-w-lg bg-[#111] border border-white/10 rounded-sm shadow-2xl overflow-hidden"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-white/5">
+          <div>
+            <p className="text-xs font-mono text-secondary tracking-widest uppercase">Órale Business Corner</p>
+            <h2 className="text-xl font-display text-white mt-0.5">Get Listed</h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-white transition-colors p-1"
+            aria-label="Close"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-6 max-h-[70vh] overflow-y-auto">
+          {success ? (
+            <div className="flex flex-col items-center gap-4 py-8 text-center">
+              <CheckCircle2 size={48} className="text-green-400" />
+              <h3 className="text-lg font-display text-white">Request Received!</h3>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                Thanks for your interest in the Órale Business Corner. We'll review your submission and be in touch soon.
+              </p>
+              <button
+                onClick={onClose}
+                className="mt-2 px-6 py-3 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider text-sm hover:bg-primary/90 transition-all rounded-sm"
+              >
+                Done
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="sm:col-span-2">
+                  <label className={labelClass}>Business Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.businessName}
+                    onChange={set("businessName")}
+                    placeholder="Your business name"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Contact Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.contactName}
+                    onChange={set("contactName")}
+                    placeholder="Your full name"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>City *</label>
+                  <select
+                    required
+                    value={form.city}
+                    onChange={set("city")}
+                    className={inputClass + " cursor-pointer"}
+                  >
+                    <option value="" disabled>Select city…</option>
+                    {CITY_ORDER.map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Phone *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={form.phone}
+                    onChange={set("phone")}
+                    placeholder="(210) 555-0100"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={set("email")}
+                    placeholder="you@example.com"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelClass}>Website <span className="normal-case tracking-normal text-muted-foreground/50">(optional)</span></label>
+                  <input
+                    type="url"
+                    value={form.websiteUrl}
+                    onChange={set("websiteUrl")}
+                    placeholder="https://yourbusiness.com"
+                    className={inputClass}
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={labelClass}>Brief Description <span className="normal-case tracking-normal text-muted-foreground/50">(optional)</span></label>
+                  <textarea
+                    rows={3}
+                    value={form.description}
+                    onChange={set("description")}
+                    placeholder="Tell us a little about your business…"
+                    className={inputClass + " resize-none"}
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-sm text-red-400 bg-red-950/30 border border-red-800/40 px-4 py-3 rounded-sm">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider text-sm hover:bg-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-all rounded-sm border border-primary-border shadow-[0_0_20px_rgba(200,100,0,0.3)]"
+              >
+                {submitting ? (
+                  <><Loader2 size={16} className="animate-spin" /> Submitting…</>
+                ) : (
+                  <>Submit Request</>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ---- Business Cards ----
 
 function BusinessCard({ b }: { b: Business }) {
   return (
@@ -77,12 +297,13 @@ function ComingSoonCard() {
   );
 }
 
-const CITY_ORDER = ["San Antonio", "Austin", "Houston", "DFW", "Rio Grande Valley"];
+// ---- Page ----
 
 export default function BusinessCorner() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     getPublicBusinesses()
@@ -98,6 +319,11 @@ export default function BusinessCorner() {
 
   return (
     <div className="bg-background min-h-screen text-foreground overflow-x-hidden">
+
+      {/* GET LISTED MODAL */}
+      <AnimatePresence>
+        {modalOpen && <GetListedModal onClose={() => setModalOpen(false)} />}
+      </AnimatePresence>
 
       {/* HERO HEADER */}
       <section className="relative pt-32 pb-20 border-b border-white/5 overflow-hidden">
@@ -115,13 +341,13 @@ export default function BusinessCorner() {
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-display text-white mb-8 leading-tight">
               Include Your Business in Our Órale Business Online Portal
             </motion.h1>
-            <motion.a
+            <motion.button
               variants={fadeInUp}
-              href="mailto:info@oraleonline.com"
+              onClick={() => setModalOpen(true)}
               className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,100,0,0.4)]"
             >
-              <Mail size={18} /> Contact Us to Get Listed
-            </motion.a>
+              <Mail size={18} /> Get Listed
+            </motion.button>
           </motion.div>
         </div>
       </section>
