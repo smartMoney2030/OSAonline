@@ -53,10 +53,18 @@ export default function Home() {
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-6">
-              <button className="px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 flex items-center gap-3 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,20,40,0.4)]">
+              <a
+                href="https://www.youtube.com/@Oralenetwork"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 flex items-center gap-3 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,20,40,0.4)]"
+              >
                 Tune In Now <Play size={18} fill="currentColor" />
-              </button>
-              <button className="px-8 py-4 bg-transparent border border-white/20 text-white font-bold font-display uppercase tracking-wider hover:bg-white/5 transition-all active:scale-95 rounded-sm">
+              </a>
+              <button
+                onClick={() => setContactOpen(true)}
+                className="px-8 py-4 bg-transparent border border-white/20 text-white font-bold font-display uppercase tracking-wider hover:bg-white/5 transition-all active:scale-95 rounded-sm"
+              >
                 Elevate Your Brand
               </button>
             </motion.div>
@@ -122,9 +130,9 @@ export default function Home() {
                   <div className="mb-4 inline-block px-3 py-1 bg-secondary text-secondary-foreground text-xs font-bold uppercase tracking-wider">Veteran Backed</div>
                   <h4 className="text-3xl font-display text-white mb-2">Robles Jr. Law</h4>
                   <p className="text-white/70 font-sans mb-4">Personal Injury Law Firm serving Fort Worth, Dallas, and San Antonio.</p>
-                  <a href="#" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary/80 transition-colors uppercase text-sm tracking-wider">
+                  <Link href="/business-corner" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary/80 transition-colors uppercase text-sm tracking-wider">
                     Learn More <ArrowRight size={16} />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.div>
@@ -141,9 +149,9 @@ export default function Home() {
                   <div className="mb-4 inline-block px-3 py-1 bg-secondary text-secondary-foreground text-xs font-bold uppercase tracking-wider">Over A Decade of Care</div>
                   <h4 className="text-3xl font-display text-white mb-2">Dogwood Home Health</h4>
                   <p className="text-white/70 font-sans mb-4">Compassionate, family-first home health provider you can trust.</p>
-                  <a href="#" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary/80 transition-colors uppercase text-sm tracking-wider">
+                  <Link href="/business-corner" className="inline-flex items-center gap-2 text-primary font-bold hover:text-primary/80 transition-colors uppercase text-sm tracking-wider">
                     Learn More <ArrowRight size={16} />
-                  </a>
+                  </Link>
                 </div>
               </div>
             </motion.div>
@@ -262,8 +270,8 @@ export default function Home() {
                   <li>
                     <button onClick={() => setContactOpen(true)} className="hover:text-white transition-colors">Contact Us</button>
                   </li>
-                  <li><a href="#" className="hover:text-white transition-colors">Consulting</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">Sponsorships</a></li>
+                  <li><button onClick={() => setContactOpen(true)} className="hover:text-white transition-colors">Consulting</button></li>
+                  <li><button onClick={() => setContactOpen(true)} className="hover:text-white transition-colors">Sponsorships</button></li>
                   <li><Link href="/business-corner" className="hover:text-white transition-colors">Business Corner</Link></li>
                   <li><Link href="/events" className="hover:text-white transition-colors">Events</Link></li>
                 </ul>
