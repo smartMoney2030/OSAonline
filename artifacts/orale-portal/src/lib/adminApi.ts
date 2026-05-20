@@ -1,0 +1,130 @@
+const BASE = "/api";
+
+function getToken() {
+  return localStorage.getItem("orale_admin_token") ?? "";
+}
+
+function authHeaders() {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${getToken()}`,
+  };
+}
+
+async function handleResponse<T>(res: Response): Promise<T> {
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error ?? `Request failed: ${res.status}`);
+  return data as T;
+}
+
+// ---- Events ----
+
+export interface Event {
+  id: number;
+  title: string;
+  subtitle: string;
+  dateStr: string;
+  locationName: string;
+  locationAddress: string;
+  organizer: string;
+  imageUrl: string;
+  ticketUrl: string;
+  status: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export type EventPayload = Omit<Event, "id" | "createdAt">;
+
+export async function getAdminEvents(): Promise<Event[]> {
+  const res = await fetch(`${BASE}/admin/events`, { headers: authHeaders() });
+  return handleResponse<Event[]>(res);
+}
+
+export async function getPublicEvents(): Promise<Event[]> {
+  const res = await fetch(`${BASE}/events`);
+  return handleResponse<Event[]>(res);
+}
+
+export async function createEvent(data: EventPayload): Promise<Event> {
+  const res = await fetch(`${BASE}/admin/events`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Event>(res);
+}
+
+export async function updateEvent(id: number, data: Partial<EventPayload>): Promise<Event> {
+  const res = await fetch(`${BASE}/admin/events/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Event>(res);
+}
+
+export async function deleteEvent(id: number): Promise<void> {
+  const res = await fetch(`${BASE}/admin/events/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  await handleResponse<unknown>(res);
+}
+
+// ---- Businesses ----
+
+export interface Business {
+  id: number;
+  city: string;
+  name: string;
+  badge: string | null;
+  description: string;
+  phone: string | null;
+  websiteUrl: string | null;
+  websiteLabel: string | null;
+  youtubeUrl: string | null;
+  isComingSoon: boolean;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export type BusinessPayload = Omit<Business, "id" | "createdAt">;
+
+export async function getAdminBusinesses(): Promise<Business[]> {
+  const res = await fetch(`${BASE}/admin/businesses`, { headers: authHeaders() });
+  return handleResponse<Business[]>(res);
+}
+
+export async function getPublicBusinesses(): Promise<Business[]> {
+  const res = await fetch(`${BASE}/businesses`);
+  return handleResponse<Business[]>(res);
+}
+
+export async function createBusiness(data: BusinessPayload): Promise<Business> {
+  const res = await fetch(`${BASE}/admin/businesses`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Business>(res);
+}
+
+export async function updateBusiness(id: number, data: Partial<BusinessPayload>): Promise<Business> {
+  const res = await fetch(`${BASE}/admin/businesses/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Business>(res);
+}
+
+export async function deleteBusiness(id: number): Promise<void> {
+  const res = await fetch(`${BASE}/admin/businesses/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  await handleResponse<unknown>(res);
+}

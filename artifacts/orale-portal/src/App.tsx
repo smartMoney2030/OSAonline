@@ -7,6 +7,8 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import BusinessCorner from "@/pages/BusinessCorner";
 import Events from "@/pages/Events";
+import AdminLogin from "@/pages/admin/AdminLogin";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -96,13 +98,17 @@ function NavBar() {
 }
 
 function Router() {
+  const [location] = useLocation();
+  const isAdmin = location.startsWith("/admin");
   return (
     <>
-      <NavBar />
+      {!isAdmin && <NavBar />}
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/business-corner" component={BusinessCorner} />
         <Route path="/events" component={Events} />
+        <Route path="/admin" component={AdminLogin} />
+        <Route path="/admin/dashboard" component={AdminDashboard} />
         <Route component={NotFound} />
       </Switch>
     </>

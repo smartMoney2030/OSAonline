@@ -1,6 +1,7 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, ExternalLink } from "lucide-react";
+import { Mail, Phone, ExternalLink, Loader2 } from "lucide-react";
+import { getPublicBusinesses, type Business } from "@/lib/adminApi";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -12,36 +13,28 @@ const staggerContainer = {
   visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
 };
 
-interface BusinessCardProps {
-  name: string;
-  description: React.ReactNode;
-  link?: string;
-  linkLabel?: string;
-  phone?: string;
-  youtubeEmbed?: string;
-  badge?: string;
-}
-
-function BusinessCard({ name, description, link, linkLabel, phone, youtubeEmbed, badge }: BusinessCardProps) {
+function BusinessCard({ b }: { b: Business }) {
   return (
     <motion.div
       variants={fadeInUp}
       className="bg-card border border-white/5 hover:border-primary/40 transition-colors p-8 rounded-sm"
     >
-      {badge && (
+      {b.badge && (
         <div className="mb-4 inline-block px-3 py-1 bg-secondary text-secondary-foreground text-xs font-bold uppercase tracking-wider">
-          {badge}
+          {b.badge}
         </div>
       )}
-      <h4 className="text-xl font-display text-white mb-4">{name}</h4>
-      <div className="text-muted-foreground text-sm leading-relaxed mb-5">{description}</div>
+      <h4 className="text-xl font-display text-white mb-4">{b.name}</h4>
+      {b.description && (
+        <p className="text-muted-foreground text-sm leading-relaxed mb-5">{b.description}</p>
+      )}
 
-      {youtubeEmbed && (
+      {b.youtubeUrl && (
         <div className="relative w-full mb-5" style={{ paddingTop: "56.25%" }}>
           <iframe
             className="absolute inset-0 w-full h-full rounded-sm"
-            src={youtubeEmbed}
-            title={`${name} video`}
+            src={b.youtubeUrl}
+            title={`${b.name} video`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             loading="lazy"
@@ -50,22 +43,22 @@ function BusinessCard({ name, description, link, linkLabel, phone, youtubeEmbed,
       )}
 
       <div className="flex flex-wrap items-center gap-4 mt-2">
-        {phone && (
+        {b.phone && (
           <a
-            href={`tel:${phone.replace(/\D/g, "")}`}
+            href={`tel:${b.phone.replace(/\D/g, "")}`}
             className="inline-flex items-center gap-2 text-secondary font-bold text-sm hover:text-secondary/80 transition-colors"
           >
-            <Phone size={14} /> {phone}
+            <Phone size={14} /> {b.phone}
           </a>
         )}
-        {link && (
+        {b.websiteUrl && (
           <a
-            href={link}
+            href={b.websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:text-primary/80 transition-colors uppercase tracking-wider"
           >
-            {linkLabel ?? "Visit Website"} <ExternalLink size={14} />
+            {b.websiteLabel ?? "Visit Website"} <ExternalLink size={14} />
           </a>
         )}
       </div>
@@ -84,166 +77,25 @@ function ComingSoonCard() {
   );
 }
 
-const cities: { name: string; businesses: (BusinessCardProps | "coming-soon")[] }[] = [
-  {
-    name: "San Antonio",
-    businesses: [
-      {
-        name: "Dogwood Home Health Care, LLC",
-        badge: "Over A Decade of Care",
-        description: (
-          <>
-            <p className="mb-2">
-              Compassionate, bilingual home health care services you can trust. Serving families with dignity and respect.
-            </p>
-            <p className="text-white/50 italic">
-              Atención médica domiciliaria compasiva y bilingüe que usted puede confiar. Sirviendo a familias con dignidad y respeto.
-            </p>
-          </>
-        ),
-        link: "https://www.dogwoodhomehealth.com",
-        linkLabel: "dogwoodhomehealth.com"
-      },
-      {
-        name: "Robles Jr. Law",
-        badge: "Veteran Backed",
-        description: (
-          <>
-            <p className="mb-2">
-              Personal Injury Law Firm serving Fort Worth, Dallas, San Antonio and beyond. Fighting for the people who need it most.
-            </p>
-            <p className="text-white/50 italic">
-              Firma de abogados de lesiones personales sirviendo Fort Worth, Dallas, San Antonio y más. Luchando por quienes más lo necesitan.
-            </p>
-          </>
-        ),
-        phone: "(726) 241-2523",
-        youtubeEmbed: "https://www.youtube.com/embed/oMUy54r4o8o"
-      },
-      {
-        name: "Oasis Tax & Financial Services",
-        description: (
-          <>
-            <p className="mb-2">
-              Professional tax preparation and financial services for individuals and small businesses. Ask for Carol Lopez.
-            </p>
-          </>
-        ),
-        phone: "(210) 683-7241"
-      },
-      "coming-soon"
-    ]
-  },
-  {
-    name: "Austin",
-    businesses: [
-      {
-        name: "Robles Jr. Law",
-        badge: "Veteran Backed",
-        description: (
-          <>
-            <p className="mb-2">
-              Personal Injury Law Firm serving Fort Worth, Dallas, San Antonio and beyond. Fighting for the people who need it most.
-            </p>
-            <p className="text-white/50 italic">
-              Firma de abogados de lesiones personales sirviendo Fort Worth, Dallas, San Antonio y más. Luchando por quienes más lo necesitan.
-            </p>
-          </>
-        ),
-        phone: "(726) 241-2523",
-        youtubeEmbed: "https://www.youtube.com/embed/oMUy54r4o8o"
-      },
-      "coming-soon",
-      "coming-soon"
-    ]
-  },
-  {
-    name: "Houston",
-    businesses: [
-      {
-        name: "Robles Jr. Law",
-        badge: "Veteran Backed",
-        description: (
-          <>
-            <p className="mb-2">
-              Personal Injury Law Firm serving Fort Worth, Dallas, San Antonio and beyond. Fighting for the people who need it most.
-            </p>
-            <p className="text-white/50 italic">
-              Firma de abogados de lesiones personales sirviendo Fort Worth, Dallas, San Antonio y más. Luchando por quienes más lo necesitan.
-            </p>
-          </>
-        ),
-        phone: "(726) 241-2523",
-        youtubeEmbed: "https://www.youtube.com/embed/oMUy54r4o8o"
-      },
-      "coming-soon",
-      "coming-soon"
-    ]
-  },
-  {
-    name: "DFW",
-    businesses: [
-      {
-        name: "Robles Jr. Law",
-        badge: "Veteran Backed",
-        description: (
-          <>
-            <p className="mb-2">
-              Personal Injury Law Firm serving Fort Worth, Dallas, San Antonio and beyond. Fighting for the people who need it most.
-            </p>
-            <p className="text-white/50 italic">
-              Firma de abogados de lesiones personales sirviendo Fort Worth, Dallas, San Antonio y más. Luchando por quienes más lo necesitan.
-            </p>
-          </>
-        ),
-        phone: "(726) 241-2523",
-        youtubeEmbed: "https://www.youtube.com/embed/oMUy54r4o8o"
-      },
-      "coming-soon",
-      "coming-soon"
-    ]
-  },
-  {
-    name: "Rio Grande Valley",
-    businesses: [
-      {
-        name: "Dogwood Home Health Care, LLC",
-        badge: "Over A Decade of Care",
-        description: (
-          <>
-            <p className="mb-2">
-              Compassionate, bilingual home health care services you can trust. Serving families with dignity and respect.
-            </p>
-            <p className="text-white/50 italic">
-              Atención médica domiciliaria compasiva y bilingüe que usted puede confiar. Sirviendo a familias con dignidad y respeto.
-            </p>
-          </>
-        ),
-        link: "https://www.dogwoodhomehealth.com",
-        linkLabel: "dogwoodhomehealth.com"
-      },
-      {
-        name: "Robles Jr. Law",
-        badge: "Veteran Backed",
-        description: (
-          <>
-            <p className="mb-2">
-              Personal Injury Law Firm serving Fort Worth, Dallas, San Antonio and beyond. Fighting for the people who need it most.
-            </p>
-            <p className="text-white/50 italic">
-              Firma de abogados de lesiones personales sirviendo Fort Worth, Dallas, San Antonio y más. Luchando por quienes más lo necesitan.
-            </p>
-          </>
-        ),
-        phone: "(726) 241-2523",
-        youtubeEmbed: "https://www.youtube.com/embed/oMUy54r4o8o"
-      },
-      "coming-soon"
-    ]
-  }
-];
+const CITY_ORDER = ["San Antonio", "Austin", "Houston", "DFW", "Rio Grande Valley"];
 
 export default function BusinessCorner() {
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getPublicBusinesses()
+      .then(setBusinesses)
+      .catch(() => setError("Failed to load business listings."))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const cities = CITY_ORDER.map(city => ({
+    name: city,
+    items: businesses.filter(b => b.city === city),
+  })).filter(c => c.items.length > 0);
+
   return (
     <div className="bg-background min-h-screen text-foreground overflow-x-hidden">
 
@@ -266,7 +118,7 @@ export default function BusinessCorner() {
             <motion.a
               variants={fadeInUp}
               href="mailto:info@oraleonline.com"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,20,40,0.4)]"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,100,0,0.4)]"
             >
               <Mail size={18} /> Contact Us to Get Listed
             </motion.a>
@@ -291,9 +143,17 @@ export default function BusinessCorner() {
 
       {/* CITY SECTIONS */}
       <div className="container mx-auto px-6 py-16 space-y-20">
-        {cities.map((city) => (
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 size={32} className="animate-spin text-muted-foreground" />
+          </div>
+        ) : error ? (
+          <p className="text-center text-muted-foreground py-24">{error}</p>
+        ) : cities.length === 0 ? (
+          <p className="text-center text-muted-foreground py-24">Business listings coming soon.</p>
+        ) : cities.map(({ name, items }) => (
           <motion.section
-            key={city.name}
+            key={name}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
@@ -301,17 +161,13 @@ export default function BusinessCorner() {
           >
             <motion.div variants={fadeInUp} className="flex items-center gap-4 mb-8">
               <div className="h-px flex-1 bg-white/10" />
-              <h3 className="text-2xl font-display text-white uppercase tracking-widest px-4">{city.name}</h3>
+              <h3 className="text-2xl font-display text-white uppercase tracking-widest px-4">{name}</h3>
               <div className="h-px flex-1 bg-white/10" />
             </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {city.businesses.map((biz, i) =>
-                biz === "coming-soon" ? (
-                  <ComingSoonCard key={i} />
-                ) : (
-                  <BusinessCard key={i} {...biz} />
-                )
+              {items.map(b =>
+                b.isComingSoon ? <ComingSoonCard key={b.id} /> : <BusinessCard key={b.id} b={b} />
               )}
             </div>
           </motion.section>
