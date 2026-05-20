@@ -13,7 +13,14 @@ function authHeaders() {
 
 async function handleResponse<T>(res: Response): Promise<T> {
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error ?? `Request failed: ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error(
+        data.error ?? "Too many requests — please wait a few minutes before trying again."
+      );
+    }
+    throw new Error(data.error ?? `Request failed: ${res.status}`);
+  }
   return data as T;
 }
 

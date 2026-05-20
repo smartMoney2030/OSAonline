@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
 import { db } from "@workspace/db";
 import { businessSubmissionsTable, insertBusinessSubmissionSchema, updateBusinessSubmissionSchema } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
@@ -6,8 +7,16 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
+const submitLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: { error: "Too many listing requests from this IP — please wait a few minutes and try again." },
+});
+
 // Public: submit a business listing request
-router.post("/businesses/submit", async (req, res) => {
+router.post("/businesses/submit", submitLimiter, async (req, res) => {
   const parsed = insertBusinessSubmissionSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.flatten() });
