@@ -129,6 +129,49 @@ export async function deleteBusiness(id: number): Promise<void> {
   await handleResponse<unknown>(res);
 }
 
+// ---- Business Listing Requests ----
+
+export interface BusinessSubmission {
+  id: number;
+  businessName: string;
+  city: string;
+  contactName: string;
+  phone: string;
+  email: string;
+  websiteUrl: string | null;
+  description: string | null;
+  status: string;
+  createdAt: string;
+}
+
+export type BusinessSubmissionPayload = Omit<BusinessSubmission, "id" | "createdAt" | "status">;
+
+export async function getBusinessSubmissions(): Promise<BusinessSubmission[]> {
+  const res = await fetch(`${BASE}/admin/business-submissions`, { headers: authHeaders() });
+  return handleResponse<BusinessSubmission[]>(res);
+}
+
+export async function updateBusinessSubmissionStatus(
+  id: number,
+  status: "pending" | "approved" | "rejected",
+): Promise<BusinessSubmission> {
+  const res = await fetch(`${BASE}/admin/business-submissions/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ status }),
+  });
+  return handleResponse<BusinessSubmission>(res);
+}
+
+export async function submitBusinessListing(data: BusinessSubmissionPayload): Promise<BusinessSubmission> {
+  const res = await fetch(`${BASE}/businesses/submit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  return handleResponse<BusinessSubmission>(res);
+}
+
 // ---- Contact Submissions ----
 
 export interface ContactSubmission {
