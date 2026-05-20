@@ -257,7 +257,7 @@ export default function Home() {
                   </svg>
                 </a>
                 {/* Facebook */}
-                <a href="https://www.facebook.com/share/1AxZieDNiU/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.facebook.com/share/1JPAGaKLob/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"
                   className="w-12 h-12 border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-colors text-white group"
                   aria-label="Facebook">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -295,6 +295,7 @@ export default function Home() {
             <div className="flex gap-6 mt-4 md:mt-0">
               <a href="#" className="hover:text-white transition-colors">Privacy</a>
               <a href="#" className="hover:text-white transition-colors">Terms</a>
+              <Link href="/admin" className="hover:text-white transition-colors">Admin</Link>
             </div>
           </div>
         </div>
