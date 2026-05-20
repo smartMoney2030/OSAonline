@@ -3,9 +3,10 @@ import { useLocation } from "wouter";
 import {
   getAdminEvents, createEvent, updateEvent, deleteEvent,
   getAdminBusinesses, createBusiness, updateBusiness, deleteBusiness,
-  type Event, type Business, type EventPayload, type BusinessPayload,
+  getContactSubmissions, deleteContactSubmission,
+  type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission,
 } from "@/lib/adminApi";
-import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail } from "lucide-react";
 
 function useAuth() {
   const [, navigate] = useLocation();
@@ -354,14 +355,91 @@ function BusinessesTab() {
   );
 }
 
+// ---- Contact Submissions Tab ----
+function ContactTab() {
+  const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { setSubmissions(await getContactSubmissions()); } catch { setError("Failed to load submissions"); }
+    finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  async function handleDelete(id: number) {
+    if (!confirm("Delete this submission?")) return;
+    try { await deleteContactSubmission(id); await load(); }
+    catch { setError("Delete failed"); }
+  }
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleString("en-US", {
+      month: "short", day: "numeric", year: "numeric",
+      hour: "numeric", minute: "2-digit",
+    });
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-display text-white">Contact Submissions</h2>
+        <span className="text-xs font-mono text-muted-foreground">{submissions.length} total</span>
+      </div>
+      {error && <p className="text-red-400 text-sm mb-4 font-mono">{error}</p>}
+      {loading ? (
+        <div className="flex items-center justify-center py-20"><Loader2 size={24} className="animate-spin text-muted-foreground" /></div>
+      ) : submissions.length === 0 ? (
+        <div className="py-16 text-center">
+          <Mail size={32} className="text-muted-foreground mx-auto mb-3 opacity-40" />
+          <p className="text-muted-foreground text-sm">No contact submissions yet.</p>
+          <p className="text-muted-foreground text-xs mt-1">When someone fills out the Contact Us form on the site, they'll appear here.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {submissions.map(s => (
+            <div key={s.id} className="bg-background border border-white/10 rounded-sm p-4 flex items-start gap-4">
+              <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center shrink-0 mt-0.5">
+                <span className="text-primary text-sm font-bold">{s.name.charAt(0).toUpperCase()}</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-white font-bold">{s.name}</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                  <a href={`tel:${s.phone}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.phone}</a>
+                  <a href={`mailto:${s.email}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.email}</a>
+                </div>
+                <p className="text-muted-foreground text-xs mt-1 font-mono">{formatDate(s.createdAt)}</p>
+              </div>
+              <button
+                onClick={() => handleDelete(s.id)}
+                className="p-2 text-muted-foreground hover:text-red-400 transition-colors shrink-0"
+                title="Delete submission"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ---- Dashboard Shell ----
 export default function AdminDashboard() {
   const { logout } = useAuth();
-  const [tab, setTab] = useState<"events" | "businesses">("events");
+  const [tab, setTab] = useState<"events" | "businesses" | "contacts">("events");
+
+  const tabs = [
+    { key: "events" as const, label: "Events" },
+    { key: "businesses" as const, label: "Business Listings" },
+    { key: "contacts" as const, label: "Contact Submissions" },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Top bar */}
       <header className="border-b border-white/10 bg-card sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-6 flex items-center justify-between h-14">
           <div className="flex items-center gap-4">
@@ -374,24 +452,24 @@ export default function AdminDashboard() {
         </div>
       </header>
 
-      {/* Tabs */}
       <div className="border-b border-white/10">
-        <div className="max-w-5xl mx-auto px-6 flex gap-6">
-          {(["events", "businesses"] as const).map(t => (
+        <div className="max-w-5xl mx-auto px-6 flex gap-6 overflow-x-auto">
+          {tabs.map(t => (
             <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors ${tab === t ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-white"}`}
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`py-3 text-sm font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${tab === t.key ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-white"}`}
             >
-              {t === "events" ? "Events" : "Business Listings"}
+              {t.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Content */}
       <main className="max-w-5xl mx-auto px-6 py-8">
-        {tab === "events" ? <EventsTab /> : <BusinessesTab />}
+        {tab === "events" && <EventsTab />}
+        {tab === "businesses" && <BusinessesTab />}
+        {tab === "contacts" && <ContactTab />}
       </main>
     </div>
   );

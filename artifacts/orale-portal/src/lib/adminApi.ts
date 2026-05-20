@@ -128,3 +128,26 @@ export async function deleteBusiness(id: number): Promise<void> {
   });
   await handleResponse<unknown>(res);
 }
+
+// ---- Contact Submissions ----
+
+export interface ContactSubmission {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  createdAt: string;
+}
+
+export async function getContactSubmissions(): Promise<ContactSubmission[]> {
+  const res = await fetch(`${BASE}/admin/contact-submissions`, { headers: authHeaders() });
+  return handleResponse<ContactSubmission[]>(res);
+}
+
+export async function deleteContactSubmission(id: number): Promise<void> {
+  const res = await fetch(`${BASE}/admin/contact-submissions/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  await handleResponse<unknown>(res);
+}

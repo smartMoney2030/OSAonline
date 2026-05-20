@@ -1,2 +1,3 @@
 export * from "./events";
 export * from "./businesses";
+export * from "./contact_submissions";
