@@ -4,9 +4,10 @@ import {
   getAdminEvents, createEvent, updateEvent, deleteEvent,
   getAdminBusinesses, createBusiness, updateBusiness, deleteBusiness,
   getContactSubmissions, deleteContactSubmission,
-  type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission,
+  getBusinessSubmissions, updateBusinessSubmissionStatus,
+  type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission, type BusinessSubmission,
 } from "@/lib/adminApi";
-import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle } from "lucide-react";
 
 function useAuth() {
   const [, navigate] = useLocation();
@@ -355,6 +356,196 @@ function BusinessesTab() {
   );
 }
 
+// ---- Business Submissions Tab ----
+function SubmissionsTab({ onPromoted }: { onPromoted?: () => void }) {
+  const [submissions, setSubmissions] = useState<BusinessSubmission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const [promoteTarget, setPromoteTarget] = useState<BusinessSubmission | null>(null);
+  const [promoteForm, setPromoteForm] = useState<BusinessPayload>(EMPTY_BUSINESS);
+  const [promoting, setPromoting] = useState(false);
+  const [promoteError, setPromoteError] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { setSubmissions(await getBusinessSubmissions()); } catch { setError("Failed to load submissions"); }
+    finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  async function handleStatusChange(id: number, status: "approved" | "rejected") {
+    try {
+      await updateBusinessSubmissionStatus(id, status);
+      await load();
+    } catch { setError("Update failed"); }
+  }
+
+  function openPromote(sub: BusinessSubmission) {
+    setPromoteTarget(sub);
+    setPromoteForm({
+      city: sub.city,
+      name: sub.businessName,
+      badge: null,
+      description: sub.description ?? "",
+      phone: sub.phone ?? null,
+      websiteUrl: sub.websiteUrl ?? null,
+      websiteLabel: sub.websiteUrl ? "Visit Website" : null,
+      youtubeUrl: null,
+      isComingSoon: false,
+      isActive: true,
+      sortOrder: 0,
+    });
+    setPromoteError("");
+  }
+
+  async function handlePromoteSave() {
+    if (!promoteTarget) return;
+    setPromoting(true);
+    setPromoteError("");
+    try {
+      await createBusiness(promoteForm);
+      await updateBusinessSubmissionStatus(promoteTarget.id, "approved");
+      setPromoteTarget(null);
+      await load();
+      onPromoted?.();
+    } catch (err: unknown) {
+      setPromoteError(err instanceof Error ? err.message : "Save failed");
+    } finally { setPromoting(false); }
+  }
+
+  function setField<K extends keyof BusinessPayload>(k: K, v: BusinessPayload[K]) {
+    setPromoteForm(f => ({ ...f, [k]: v }));
+  }
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleString("en-US", {
+      month: "short", day: "numeric", year: "numeric",
+      hour: "numeric", minute: "2-digit",
+    });
+  }
+
+  const statusBadge = (status: string) => {
+    if (status === "approved") return <span className="text-xs px-2 py-0.5 rounded-full bg-green-900/40 text-green-400">Approved</span>;
+    if (status === "rejected") return <span className="text-xs px-2 py-0.5 rounded-full bg-red-900/40 text-red-400">Rejected</span>;
+    return <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-900/40 text-yellow-400">Pending</span>;
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-display text-white">Business Listing Requests</h2>
+        <span className="text-xs font-mono text-muted-foreground">{submissions.length} total</span>
+      </div>
+      {error && <p className="text-red-400 text-sm mb-4 font-mono">{error}</p>}
+      {loading ? (
+        <div className="flex items-center justify-center py-20"><Loader2 size={24} className="animate-spin text-muted-foreground" /></div>
+      ) : submissions.length === 0 ? (
+        <div className="py-16 text-center">
+          <ArrowUpCircle size={32} className="text-muted-foreground mx-auto mb-3 opacity-40" />
+          <p className="text-muted-foreground text-sm">No listing requests yet.</p>
+          <p className="text-muted-foreground text-xs mt-1">When a business fills out the "Get Listed" form, it'll appear here.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {submissions.map(s => (
+            <div key={s.id} className="bg-background border border-white/10 rounded-sm p-4">
+              <div className="flex items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-white font-bold">{s.businessName}</p>
+                    <span className="text-xs text-muted-foreground font-mono">{s.city}</span>
+                    {statusBadge(s.status)}
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
+                    <span className="text-muted-foreground text-sm">{s.contactName}</span>
+                    <a href={`tel:${s.phone}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.phone}</a>
+                    <a href={`mailto:${s.email}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.email}</a>
+                    {s.websiteUrl && <a href={s.websiteUrl} target="_blank" rel="noreferrer" className="text-muted-foreground text-sm hover:text-white transition-colors truncate max-w-xs">{s.websiteUrl}</a>}
+                  </div>
+                  {s.description && <p className="text-muted-foreground text-xs mt-2 line-clamp-2">{s.description}</p>}
+                  <p className="text-muted-foreground text-xs mt-1 font-mono">{formatDate(s.createdAt)}</p>
+                </div>
+                <div className="flex flex-col gap-2 shrink-0 items-end">
+                  {s.status === "pending" && (
+                    <>
+                      <button
+                        onClick={() => openPromote(s)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-sm hover:bg-primary/90 transition-colors whitespace-nowrap"
+                      >
+                        <ArrowUpCircle size={12} /> Approve & Create Listing
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(s.id, "rejected")}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-red-500/40 text-red-400 text-xs rounded-sm hover:bg-red-500/10 transition-colors"
+                      >
+                        Reject
+                      </button>
+                    </>
+                  )}
+                  {s.status === "approved" && (
+                    <button
+                      onClick={() => handleStatusChange(s.id, "rejected")}
+                      className="text-xs text-muted-foreground hover:text-red-400 transition-colors"
+                    >
+                      Revoke
+                    </button>
+                  )}
+                  {s.status === "rejected" && (
+                    <button
+                      onClick={() => openPromote(s)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-sm hover:bg-primary/90 transition-colors whitespace-nowrap"
+                    >
+                      <ArrowUpCircle size={12} /> Approve & Create Listing
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {promoteTarget && (
+        <Modal
+          title={`Create Listing — ${promoteTarget.businessName}`}
+          onClose={() => setPromoteTarget(null)}
+          onSave={handlePromoteSave}
+          saving={promoting}
+        >
+          {promoteError && <p className="text-red-400 text-sm font-mono">{promoteError}</p>}
+          <p className="text-xs text-muted-foreground font-mono -mt-1">Review and adjust the details below, then save to publish the listing and mark this request as approved.</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="City">
+              <select
+                value={promoteForm.city}
+                onChange={e => setField("city", e.target.value)}
+                className="w-full bg-background border border-white/10 rounded-sm px-3 py-2 text-white focus:outline-none focus:border-primary transition-colors text-sm"
+              >
+                {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </Field>
+            <Field label="Business Name"><Input value={promoteForm.name} onChange={v => setField("name", v)} /></Field>
+          </div>
+          <Field label="Badge (optional)"><Input value={promoteForm.badge ?? ""} onChange={v => setField("badge", v || null)} placeholder="e.g. Veteran Backed" /></Field>
+          <Field label="Description"><Textarea value={promoteForm.description} onChange={v => setField("description", v)} rows={4} /></Field>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Phone (optional)"><Input value={promoteForm.phone ?? ""} onChange={v => setField("phone", v || null)} placeholder="(210) 555-0000" /></Field>
+            <Field label="Website Label"><Input value={promoteForm.websiteLabel ?? ""} onChange={v => setField("websiteLabel", v || null)} placeholder="Visit Website" /></Field>
+          </div>
+          <Field label="Website URL"><Input value={promoteForm.websiteUrl ?? ""} onChange={v => setField("websiteUrl", v || null)} placeholder="https://..." /></Field>
+          <Field label="YouTube Embed URL (optional)"><Input value={promoteForm.youtubeUrl ?? ""} onChange={v => setField("youtubeUrl", v || null)} placeholder="https://www.youtube.com/embed/..." /></Field>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <Field label="Sort Order"><Input type="number" value={String(promoteForm.sortOrder)} onChange={v => setField("sortOrder", Number(v))} /></Field>
+          </div>
+          <Toggle checked={promoteForm.isActive} onChange={v => setField("isActive", v)} label="Visible on site" />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
 // ---- Contact Submissions Tab ----
 function ContactTab() {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
@@ -430,11 +621,13 @@ function ContactTab() {
 // ---- Dashboard Shell ----
 export default function AdminDashboard() {
   const { logout } = useAuth();
-  const [tab, setTab] = useState<"events" | "businesses" | "contacts">("events");
+  const [tab, setTab] = useState<"events" | "businesses" | "submissions" | "contacts">("events");
+  const [businessesKey, setBusinessesKey] = useState(0);
 
   const tabs = [
     { key: "events" as const, label: "Events" },
     { key: "businesses" as const, label: "Business Listings" },
+    { key: "submissions" as const, label: "Listing Requests" },
     { key: "contacts" as const, label: "Contact Submissions" },
   ];
 
@@ -468,7 +661,14 @@ export default function AdminDashboard() {
 
       <main className="max-w-5xl mx-auto px-6 py-8">
         {tab === "events" && <EventsTab />}
-        {tab === "businesses" && <BusinessesTab />}
+        {tab === "businesses" && <BusinessesTab key={businessesKey} />}
+        {tab === "submissions" && (
+          <SubmissionsTab
+            onPromoted={() => {
+              setBusinessesKey(k => k + 1);
+            }}
+          />
+        )}
         {tab === "contacts" && <ContactTab />}
       </main>
     </div>
