@@ -49,7 +49,7 @@ export default function Home() {
             </motion.div>
             
             <motion.p variants={fadeInUp} className="text-xl md:text-2xl text-muted-foreground font-sans max-w-2xl mb-12 leading-relaxed">
-              The gateway to a world of content, community advocacy, and business elevation. Elite affordable consulting meets multimedia streaming.
+              Where elite strategy meets global reach. Empower your brand through premier, cost-effective business consulting and cutting-edge in-house multimedia streaming TV and Radio designed to champion your community and scale your business to a whole new profitable level!
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-6">
