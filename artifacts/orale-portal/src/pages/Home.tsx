@@ -183,7 +183,7 @@ export default function Home() {
               {[
                 { title: "ROKU TV", desc: "Global streaming access bringing San Antonio soul to the world.", icon: <MonitorPlay size={32} className="text-primary" />, href: null },
                 { title: "Órale TV Shows", desc: "Original programming, authentic stories, zero compromises.", icon: <Play size={32} className="text-secondary" />, href: null },
-                { title: "OSA Radio Station", desc: "The heartbeat of the streets. Raw, unfiltered, always on.", icon: <Radio size={32} className="text-white" />, href: "https://aistudio.google.com/apps/eefe2d01-2f86-4c0f-9c85-d538e6277d55" }
+                { title: "OSA Radio Station", desc: "The heartbeat of the streets. Raw, unfiltered, always on.", icon: <Radio size={32} className="text-white" />, href: "https://osaradio.com/" }
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeInUp}
                   className={`p-8 bg-card border border-white/5 hover:border-primary/50 transition-colors group${item.href ? " cursor-pointer" : ""}`}
