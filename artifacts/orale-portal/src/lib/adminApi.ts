@@ -186,6 +186,7 @@ export interface ContactSubmission {
   name: string;
   phone: string;
   email: string;
+  message?: string | null;
   createdAt: string;
 }
 

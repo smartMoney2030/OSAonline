@@ -6,7 +6,7 @@ interface Props {
 }
 
 export default function ContactModal({ onClose }: Props) {
-  const [form, setForm] = useState({ name: "", phone: "", email: "" });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", message: "" });
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
@@ -97,6 +97,17 @@ export default function ContactModal({ onClose }: Props) {
                   onChange={e => set("email", e.target.value)}
                   placeholder="you@example.com"
                   className="w-full bg-background border border-white/10 rounded-sm px-3 py-2 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Message</label>
+                <textarea
+                  value={form.message}
+                  onChange={e => set("message", e.target.value)}
+                  placeholder="How can we help you?"
+                  rows={4}
+                  className="w-full bg-background border border-white/10 rounded-sm px-3 py-2 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors text-sm resize-none"
                 />
               </div>
             </div>

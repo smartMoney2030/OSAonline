@@ -601,6 +601,9 @@ function ContactTab() {
                   <a href={`tel:${s.phone}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.phone}</a>
                   <a href={`mailto:${s.email}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.email}</a>
                 </div>
+                {s.message && (
+                  <p className="text-muted-foreground text-sm mt-2 italic border-l-2 border-primary/30 pl-3">{s.message}</p>
+                )}
                 <p className="text-muted-foreground text-xs mt-1 font-mono">{formatDate(s.createdAt)}</p>
               </div>
               <button

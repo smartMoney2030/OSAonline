@@ -4,6 +4,7 @@ import { db } from "@workspace/db";
 import { businessSubmissionsTable, insertBusinessSubmissionSchema, updateBusinessSubmissionSchema } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth.js";
+import { sendBusinessSubmissionNotification } from "../lib/email.js";
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.post("/businesses/submit", submitLimiter, async (req, res) => {
       .insert(businessSubmissionsTable)
       .values(parsed.data)
       .returning();
+    sendBusinessSubmissionNotification(parsed.data).catch((err: unknown) => req.log.error(err));
     res.status(201).json(submission);
   } catch (err) {
     req.log.error(err);
