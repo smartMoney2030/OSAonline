@@ -8,7 +8,7 @@ import {
   getAboutUs, updateAboutUs,
   type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission, type BusinessSubmission, type AboutUsContent,
 } from "@/lib/adminApi";
-import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle, Save } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle, Save, Upload, ImageIcon } from "lucide-react";
 
 function useAuth() {
   const [, navigate] = useLocation();
@@ -37,6 +37,64 @@ const EMPTY_BUSINESS: BusinessPayload = {
   imageUrl: null, commercialUrl: null,
   isComingSoon: false, isActive: true, sortOrder: 0,
 };
+
+function ImageUpload({ value, onChange }: { value: string | null; onChange: (url: string | null) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const token = localStorage.getItem("orale_admin_token") ?? "";
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError("");
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      onChange(data.url!);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      {value && (
+        <div className="relative w-full aspect-video rounded-sm overflow-hidden bg-black border border-white/10 group">
+          <img src={value} alt="preview" className="w-full h-full object-cover" />
+          <button
+            type="button"
+            onClick={() => onChange(null)}
+            className="absolute top-2 right-2 p-1 bg-black/70 rounded-full text-white hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
+      {!value && (
+        <div className="flex items-center justify-center w-full h-28 bg-background border border-dashed border-white/20 rounded-sm">
+          <ImageIcon size={24} className="text-muted-foreground/40" />
+        </div>
+      )}
+      <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-sm text-sm cursor-pointer transition-colors font-mono border ${uploading ? "border-white/10 text-muted-foreground cursor-not-allowed" : "border-white/20 text-white hover:bg-white/5"}`}>
+        {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+        {uploading ? "Uploading…" : value ? "Replace Image" : "Upload Image"}
+        <input type="file" accept="image/*" className="hidden" disabled={uploading} onChange={handleFile} />
+      </label>
+      {error && <p className="text-red-400 text-xs font-mono">{error}</p>}
+    </div>
+  );
+}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -344,7 +402,9 @@ function BusinessesTab() {
             <Field label="Website Label"><Input value={form.websiteLabel ?? ""} onChange={v => set("websiteLabel", v || null)} placeholder="Visit Website" /></Field>
           </div>
           <Field label="Website URL"><Input value={form.websiteUrl ?? ""} onChange={v => set("websiteUrl", v || null)} placeholder="https://..." /></Field>
-          <Field label="Business Photo / Logo URL (optional)"><Input value={form.imageUrl ?? ""} onChange={v => set("imageUrl", v || null)} placeholder="https://... (image link)" /></Field>
+          <Field label="Business Photo / Logo">
+            <ImageUpload value={form.imageUrl ?? null} onChange={v => set("imageUrl", v)} />
+          </Field>
           <Field label="YouTube Embed URL (optional)"><Input value={form.youtubeUrl ?? ""} onChange={v => set("youtubeUrl", v || null)} placeholder="https://www.youtube.com/embed/..." /></Field>
           <Field label="Commercial / Ad Video URL (optional)"><Input value={form.commercialUrl ?? ""} onChange={v => set("commercialUrl", v || null)} placeholder="https://www.youtube.com/embed/... (commercial)" /></Field>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -541,6 +601,9 @@ function SubmissionsTab({ onPromoted }: { onPromoted?: () => void }) {
             <Field label="Website Label"><Input value={promoteForm.websiteLabel ?? ""} onChange={v => setField("websiteLabel", v || null)} placeholder="Visit Website" /></Field>
           </div>
           <Field label="Website URL"><Input value={promoteForm.websiteUrl ?? ""} onChange={v => setField("websiteUrl", v || null)} placeholder="https://..." /></Field>
+          <Field label="Business Photo / Logo">
+            <ImageUpload value={promoteForm.imageUrl ?? null} onChange={v => setField("imageUrl", v)} />
+          </Field>
           <Field label="YouTube Embed URL (optional)"><Input value={promoteForm.youtubeUrl ?? ""} onChange={v => setField("youtubeUrl", v || null)} placeholder="https://www.youtube.com/embed/..." /></Field>
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Sort Order"><Input type="number" value={String(promoteForm.sortOrder)} onChange={v => setField("sortOrder", Number(v))} /></Field>
