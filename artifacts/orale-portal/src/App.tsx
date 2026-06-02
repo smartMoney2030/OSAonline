@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import AboutUs from "@/pages/AboutUs";
 import BusinessCorner from "@/pages/BusinessCorner";
 import Events from "@/pages/Events";
 import AdminLogin from "@/pages/admin/AdminLogin";
@@ -16,6 +17,7 @@ const queryClient = new QueryClient();
 
 const navLinks = [
   { label: "Home", href: "/" },
+  { label: "About Us", href: "/about-us" },
   { label: "Business Corner", href: "/business-corner" },
   { label: "Events", href: "/events" }
 ];
@@ -107,6 +109,7 @@ function Router() {
       {!isAdmin && <NavBar />}
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/about-us" component={AboutUs} />
         <Route path="/business-corner" component={BusinessCorner} />
         <Route path="/events" component={Events} />
         <Route path="/privacy" component={Privacy} />

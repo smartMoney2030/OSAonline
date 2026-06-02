@@ -5,9 +5,10 @@ import {
   getAdminBusinesses, createBusiness, updateBusiness, deleteBusiness,
   getContactSubmissions, deleteContactSubmission,
   getBusinessSubmissions, updateBusinessSubmissionStatus,
-  type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission, type BusinessSubmission,
+  getAboutUs, updateAboutUs,
+  type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission, type BusinessSubmission, type AboutUsContent,
 } from "@/lib/adminApi";
-import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle, Save } from "lucide-react";
 
 function useAuth() {
   const [, navigate] = useLocation();
@@ -621,10 +622,138 @@ function ContactTab() {
   );
 }
 
+// ---- About Us Tab ----
+function AboutUsTab() {
+  const [content, setContent] = useState<AboutUsContent | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    getAboutUs().then(setContent).catch(() => setError("Failed to load content"));
+  }, []);
+
+  function updateField(field: keyof Omit<AboutUsContent, "services">, value: string) {
+    setContent(c => c ? { ...c, [field]: value } : c);
+  }
+
+  function updateService(i: number, field: "title" | "desc", value: string) {
+    setContent(c => {
+      if (!c) return c;
+      const services = c.services.map((s, idx) => idx === i ? { ...s, [field]: value } : s);
+      return { ...c, services };
+    });
+  }
+
+  async function handleSave() {
+    if (!content) return;
+    setSaving(true);
+    setError("");
+    try {
+      await updateAboutUs(content);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch {
+      setError("Failed to save changes");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (!content) {
+    return <div className="flex justify-center py-16"><Loader2 size={24} className="animate-spin text-muted-foreground" /></div>;
+  }
+
+  const inputCls = "w-full bg-background border border-white/10 rounded-sm px-3 py-2 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors text-sm";
+  const textareaCls = "w-full bg-background border border-white/10 rounded-sm px-3 py-2 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors text-sm resize-none";
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-display text-white">About Us Page</h2>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+        >
+          {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+          {saved ? "Saved!" : "Save Changes"}
+        </button>
+      </div>
+
+      {error && <p className="text-red-400 text-sm font-mono">{error}</p>}
+
+      <div className="bg-card border border-white/10 rounded-sm p-6 space-y-4">
+        <h3 className="text-white font-bold text-sm uppercase tracking-wider font-mono mb-4">Main Heading</h3>
+        <div>
+          <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Headline (first line)</label>
+          <input className={inputCls} value={content.headline} onChange={e => updateField("headline", e.target.value)} />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Headline (italic accent, second line)</label>
+          <input className={inputCls} value={content.headlineItalic} onChange={e => updateField("headlineItalic", e.target.value)} />
+        </div>
+      </div>
+
+      <div className="bg-card border border-white/10 rounded-sm p-6 space-y-4">
+        <h3 className="text-white font-bold text-sm uppercase tracking-wider font-mono mb-4">Introduction</h3>
+        <div>
+          <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Paragraph 1</label>
+          <textarea className={textareaCls} rows={4} value={content.intro1} onChange={e => updateField("intro1", e.target.value)} />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Paragraph 2</label>
+          <textarea className={textareaCls} rows={4} value={content.intro2} onChange={e => updateField("intro2", e.target.value)} />
+        </div>
+      </div>
+
+      <div className="bg-card border border-white/10 rounded-sm p-6 space-y-6">
+        <h3 className="text-white font-bold text-sm uppercase tracking-wider font-mono">Services / Capabilities</h3>
+        {content.services.map((svc, i) => (
+          <div key={svc.num} className="border border-white/5 rounded-sm p-4 space-y-3">
+            <div className="text-secondary font-mono text-xs">{svc.num}</div>
+            <div>
+              <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Title</label>
+              <input className={inputCls} value={svc.title} onChange={e => updateService(i, "title", e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Description</label>
+              <textarea className={textareaCls} rows={3} value={svc.desc} onChange={e => updateService(i, "desc", e.target.value)} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-card border border-white/10 rounded-sm p-6 space-y-4">
+        <h3 className="text-white font-bold text-sm uppercase tracking-wider font-mono mb-4">Mission Statement</h3>
+        <div>
+          <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Mission Quote</label>
+          <input className={inputCls} value={content.mission} onChange={e => updateField("mission", e.target.value)} />
+        </div>
+        <div>
+          <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">Supporting Text</label>
+          <input className={inputCls} value={content.missionSub} onChange={e => updateField("missionSub", e.target.value)} />
+        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-5 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-bold hover:bg-primary/90 transition-colors disabled:opacity-50"
+        >
+          {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+          {saved ? "Saved!" : "Save Changes"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ---- Dashboard Shell ----
 export default function AdminDashboard() {
   const { logout } = useAuth();
-  const [tab, setTab] = useState<"events" | "businesses" | "submissions" | "contacts">("events");
+  const [tab, setTab] = useState<"events" | "businesses" | "submissions" | "contacts" | "about">("events");
   const [businessesKey, setBusinessesKey] = useState(0);
 
   const tabs = [
@@ -632,6 +761,7 @@ export default function AdminDashboard() {
     { key: "businesses" as const, label: "Business Listings" },
     { key: "submissions" as const, label: "Listing Requests" },
     { key: "contacts" as const, label: "Contact Submissions" },
+    { key: "about" as const, label: "About Us" },
   ];
 
   return (
@@ -673,6 +803,7 @@ export default function AdminDashboard() {
           />
         )}
         {tab === "contacts" && <ContactTab />}
+        {tab === "about" && <AboutUsTab />}
       </main>
     </div>
   );

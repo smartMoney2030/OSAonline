@@ -202,3 +202,35 @@ export async function deleteContactSubmission(id: number): Promise<void> {
   });
   await handleResponse<unknown>(res);
 }
+
+// ---- About Us ----
+
+export interface AboutUsService {
+  num: string;
+  title: string;
+  desc: string;
+}
+
+export interface AboutUsContent {
+  headline: string;
+  headlineItalic: string;
+  intro1: string;
+  intro2: string;
+  mission: string;
+  missionSub: string;
+  services: AboutUsService[];
+}
+
+export async function getAboutUs(): Promise<AboutUsContent> {
+  const res = await fetch(`${BASE}/about-us`);
+  return handleResponse<AboutUsContent>(res);
+}
+
+export async function updateAboutUs(data: AboutUsContent): Promise<AboutUsContent> {
+  const res = await fetch(`${BASE}/admin/about-us`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<AboutUsContent>(res);
+}
