@@ -119,7 +119,7 @@ export default function Home() {
       <section className="py-24 bg-card relative">
         <div className="container mx-auto px-6">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="text-center mb-16">
-            <h2 className="text-sm font-mono text-secondary tracking-widest uppercase mb-4">Platinum Partners</h2>
+            <h2 className="text-sm font-mono text-secondary tracking-widest uppercase mb-4">Our Active Platinum Sponsoring Partners</h2>
             <h3 className="text-4xl md:text-5xl font-display text-white">The Titans Behind<br/>The Vision</h3>
           </motion.div>
           
