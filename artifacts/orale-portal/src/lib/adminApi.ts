@@ -92,6 +92,8 @@ export interface Business {
   websiteUrl: string | null;
   websiteLabel: string | null;
   youtubeUrl: string | null;
+  imageUrl: string | null;
+  commercialUrl: string | null;
   isComingSoon: boolean;
   isActive: boolean;
   sortOrder: number;

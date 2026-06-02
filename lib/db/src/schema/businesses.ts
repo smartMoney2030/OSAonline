@@ -12,6 +12,8 @@ export const businessesTable = pgTable("businesses", {
   websiteUrl: text("website_url"),
   websiteLabel: text("website_label"),
   youtubeUrl: text("youtube_url"),
+  imageUrl: text("image_url"),
+  commercialUrl: text("commercial_url"),
   isComingSoon: boolean("is_coming_soon").notNull().default(false),
   isActive: boolean("is_active").notNull().default(true),
   sortOrder: integer("sort_order").notNull().default(0),

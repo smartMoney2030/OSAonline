@@ -34,6 +34,7 @@ const EMPTY_EVENT: EventPayload = {
 const EMPTY_BUSINESS: BusinessPayload = {
   city: "San Antonio", name: "", badge: null, description: "",
   phone: null, websiteUrl: null, websiteLabel: null, youtubeUrl: null,
+  imageUrl: null, commercialUrl: null,
   isComingSoon: false, isActive: true, sortOrder: 0,
 };
 
@@ -343,7 +344,9 @@ function BusinessesTab() {
             <Field label="Website Label"><Input value={form.websiteLabel ?? ""} onChange={v => set("websiteLabel", v || null)} placeholder="Visit Website" /></Field>
           </div>
           <Field label="Website URL"><Input value={form.websiteUrl ?? ""} onChange={v => set("websiteUrl", v || null)} placeholder="https://..." /></Field>
+          <Field label="Business Photo / Logo URL (optional)"><Input value={form.imageUrl ?? ""} onChange={v => set("imageUrl", v || null)} placeholder="https://... (image link)" /></Field>
           <Field label="YouTube Embed URL (optional)"><Input value={form.youtubeUrl ?? ""} onChange={v => set("youtubeUrl", v || null)} placeholder="https://www.youtube.com/embed/..." /></Field>
+          <Field label="Commercial / Ad Video URL (optional)"><Input value={form.commercialUrl ?? ""} onChange={v => set("commercialUrl", v || null)} placeholder="https://www.youtube.com/embed/... (commercial)" /></Field>
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Sort Order"><Input type="number" value={String(form.sortOrder)} onChange={v => set("sortOrder", Number(v))} /></Field>
           </div>
@@ -394,6 +397,8 @@ function SubmissionsTab({ onPromoted }: { onPromoted?: () => void }) {
       websiteUrl: sub.websiteUrl ?? null,
       websiteLabel: sub.websiteUrl ? "Visit Website" : null,
       youtubeUrl: null,
+      imageUrl: null,
+      commercialUrl: null,
       isComingSoon: false,
       isActive: true,
       sortOrder: 0,

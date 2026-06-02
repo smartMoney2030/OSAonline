@@ -237,50 +237,76 @@ function BusinessCard({ b }: { b: Business }) {
   return (
     <motion.div
       variants={fadeInUp}
-      className="bg-card border border-white/5 hover:border-primary/40 transition-colors p-8 rounded-sm"
+      className="bg-card border border-white/5 hover:border-primary/40 transition-colors rounded-sm overflow-hidden"
     >
-      {b.badge && (
-        <div className="mb-4 inline-block px-3 py-1 bg-secondary text-secondary-foreground text-xs font-bold uppercase tracking-wider">
-          {b.badge}
-        </div>
-      )}
-      <h4 className="text-xl font-display text-white mb-4">{b.name}</h4>
-      {b.description && (
-        <p className="text-muted-foreground text-sm leading-relaxed mb-5">{b.description}</p>
-      )}
-
-      {b.youtubeUrl && (
-        <div className="relative w-full mb-5" style={{ paddingTop: "56.25%" }}>
-          <iframe
-            className="absolute inset-0 w-full h-full rounded-sm"
-            src={b.youtubeUrl}
-            title={`${b.name} video`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+      {b.imageUrl && (
+        <div className="w-full aspect-video overflow-hidden bg-black">
+          <img
+            src={b.imageUrl}
+            alt={b.name}
+            className="w-full h-full object-cover"
             loading="lazy"
           />
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-4 mt-2">
-        {b.phone && (
-          <a
-            href={`tel:${b.phone.replace(/\D/g, "")}`}
-            className="inline-flex items-center gap-2 text-secondary font-bold text-sm hover:text-secondary/80 transition-colors"
-          >
-            <Phone size={14} /> {b.phone}
-          </a>
+      <div className="p-8">
+        {b.badge && (
+          <div className="mb-4 inline-block px-3 py-1 bg-secondary text-secondary-foreground text-xs font-bold uppercase tracking-wider">
+            {b.badge}
+          </div>
         )}
-        {b.websiteUrl && (
-          <a
-            href={b.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:text-primary/80 transition-colors uppercase tracking-wider"
-          >
-            {b.websiteLabel ?? "Visit Website"} <ExternalLink size={14} />
-          </a>
+        <h4 className="text-xl font-display text-white mb-4">{b.name}</h4>
+        {b.description && (
+          <p className="text-muted-foreground text-sm leading-relaxed mb-5">{b.description}</p>
         )}
+
+        {b.youtubeUrl && (
+          <div className="relative w-full mb-5" style={{ paddingTop: "56.25%" }}>
+            <iframe
+              className="absolute inset-0 w-full h-full rounded-sm"
+              src={b.youtubeUrl}
+              title={`${b.name} video`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        {b.commercialUrl && (
+          <div className="relative w-full mb-5" style={{ paddingTop: "56.25%" }}>
+            <iframe
+              className="absolute inset-0 w-full h-full rounded-sm"
+              src={b.commercialUrl}
+              title={`${b.name} commercial`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+        )}
+
+        <div className="flex flex-wrap items-center gap-4 mt-2">
+          {b.phone && (
+            <a
+              href={`tel:${b.phone.replace(/\D/g, "")}`}
+              className="inline-flex items-center gap-2 text-secondary font-bold text-sm hover:text-secondary/80 transition-colors"
+            >
+              <Phone size={14} /> {b.phone}
+            </a>
+          )}
+          {b.websiteUrl && (
+            <a
+              href={b.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:text-primary/80 transition-colors uppercase tracking-wider"
+            >
+              {b.websiteLabel ?? "Visit Website"} <ExternalLink size={14} />
+            </a>
+          )}
+        </div>
       </div>
     </motion.div>
   );
