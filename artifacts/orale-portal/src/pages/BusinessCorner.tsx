@@ -8,6 +8,16 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } }
 };
 
+function toYouTubeEmbed(url: string): string {
+  if (!url) return url;
+  if (url.includes("/embed/")) return url;
+  const watchMatch = url.match(/[?&]v=([^&#]+)/);
+  if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+  const shortMatch = url.match(/youtu\.be\/([^?#]+)/);
+  if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+  return url;
+}
+
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
@@ -265,7 +275,7 @@ function BusinessCard({ b }: { b: Business }) {
           <div className="relative w-full mb-5" style={{ paddingTop: "56.25%" }}>
             <iframe
               className="absolute inset-0 w-full h-full rounded-sm"
-              src={b.youtubeUrl}
+              src={toYouTubeEmbed(b.youtubeUrl)}
               title={`${b.name} video`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -278,7 +288,7 @@ function BusinessCard({ b }: { b: Business }) {
           <div className="relative w-full mb-5" style={{ paddingTop: "56.25%" }}>
             <iframe
               className="absolute inset-0 w-full h-full rounded-sm"
-              src={b.commercialUrl}
+              src={toYouTubeEmbed(b.commercialUrl)}
               title={`${b.name} commercial`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
