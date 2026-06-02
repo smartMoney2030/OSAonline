@@ -18,7 +18,7 @@ function useAuth() {
   }, [token, navigate]);
   function logout() {
     localStorage.removeItem("orale_admin_token");
-    navigate("/admin");
+    navigate("/");
   }
   return { logout };
 }
