@@ -96,7 +96,7 @@ export default function Home() {
               {[
                 { title: "Airing on Major Platforms and T.V. Networks", desc: "Global streaming access bringing San Antonio soul to the world.", icon: <MonitorPlay size={32} className="text-primary" />, href: null },
                 { title: "Órale TV Shows", desc: "Original programming, authentic stories, zero compromises.", icon: <Play size={32} className="text-secondary" />, href: null },
-                { title: "OSA Radio Station", desc: "The heartbeat of the streets. Raw, unfiltered, always on.", icon: <Radio size={32} className="text-white" />, href: "https://osaradio.com/" }
+                { title: "OSA INTERNATIONAL STREAMING STATION", desc: "OSA Radio is a powerhouse 24/7 global streaming network, broadcasting your message across Texas and around the world without interruption. We don't just air your content—we actively drive audience acquisition by syndicate-promoting our station across major global media platforms to ensure maximum visibility for your business, brand, and products.\n\nWhat sets us apart is our built-in, self-sustaining ecosystem. The premier independent artists featured on OSA Radio aggressively promote their own shows and music, organically driving their loyal fanbases straight to your brand. It is an innovative, community-driven marketing engine powered by the exact audience you want to reach.\n\nOSA Radio never sleeps. We are working every minute of every hour, every single day, to scale your audience and guarantee an exceptional return on your investment.", icon: <Radio size={32} className="text-white" />, href: "https://osaradio.com/" }
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeInUp}
                   className={`p-8 bg-card border border-white/5 hover:border-primary/50 transition-colors group${item.href ? " cursor-pointer" : ""}`}
@@ -104,7 +104,9 @@ export default function Home() {
                 >
                   <div className="mb-6">{item.icon}</div>
                   <h4 className="text-2xl font-display text-white mb-3 group-hover:text-secondary transition-colors">{item.title}</h4>
-                  <p className="text-muted-foreground">{item.desc}</p>
+                  <div className="text-muted-foreground space-y-3">
+                    {item.desc.split("\n\n").map((para, pi) => <p key={pi}>{para}</p>)}
+                  </div>
                   {item.href && <p className="text-primary text-xs font-mono uppercase tracking-widest mt-4">Listen Live →</p>}
                 </motion.div>
               ))}
