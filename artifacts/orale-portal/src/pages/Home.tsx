@@ -285,8 +285,7 @@ export default function Home() {
               <div>
                 <h4 className="text-white font-bold mb-6 font-display uppercase tracking-wider">Location</h4>
                 <address className="not-italic text-muted-foreground space-y-2">
-                  San Antonio, TX<br/>
-                  Heart of Texas Culture
+                  Studio Location San Antonio Texas, The Heart of Texas Culture but also catering world-Wide Ensuring your business success, no matter where you are located at.
                 </address>
               </div>
             </div>
