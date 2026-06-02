@@ -88,13 +88,13 @@ export default function Home() {
               <motion.h2 variants={fadeInUp} className="text-sm font-mono text-secondary tracking-widest uppercase mb-4">Our Reach</motion.h2>
               <motion.h3 variants={fadeInUp} className="text-4xl md:text-5xl font-display text-white mb-6">Omnipresent<br/>Influence.</motion.h3>
               <motion.p variants={fadeInUp} className="text-muted-foreground text-lg mb-8">
-                From the local airwaves of San Antonio to global Roku streaming platforms. We amplify voices that demand to be heard.
+                From the local airwaves of San Antonio to major platforms and T.V. networks worldwide. We amplify voices that demand to be heard.
               </motion.p>
             </div>
             
             <div className="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6">
               {[
-                { title: "ROKU TV", desc: "Global streaming access bringing San Antonio soul to the world.", icon: <MonitorPlay size={32} className="text-primary" />, href: null },
+                { title: "Airing on Major Platforms and T.V. Networks", desc: "Global streaming access bringing San Antonio soul to the world.", icon: <MonitorPlay size={32} className="text-primary" />, href: null },
                 { title: "Órale TV Shows", desc: "Original programming, authentic stories, zero compromises.", icon: <Play size={32} className="text-secondary" />, href: null },
                 { title: "OSA Radio Station", desc: "The heartbeat of the streets. Raw, unfiltered, always on.", icon: <Radio size={32} className="text-white" />, href: "https://osaradio.com/" }
               ].map((item, i) => (
