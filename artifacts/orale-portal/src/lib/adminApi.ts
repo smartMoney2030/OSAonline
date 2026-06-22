@@ -205,6 +205,84 @@ export async function deleteContactSubmission(id: number): Promise<void> {
   await handleResponse<unknown>(res);
 }
 
+// ---- Properties (For Sale by Owner) ----
+
+export interface Property {
+  id: number;
+  title: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string | null;
+  price: string;
+  bedrooms: number | null;
+  bathrooms: string | null;
+  sqft: number | null;
+  lotSize: string | null;
+  propertyType: string;
+  yearBuilt: number | null;
+  garage: string | null;
+  description: string;
+  images: string;
+  contactName: string | null;
+  contactPhone: string | null;
+  contactEmail: string | null;
+  status: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export type PropertyPayload = Omit<Property, "id" | "createdAt">;
+
+export async function getPublicProperties(): Promise<Property[]> {
+  const res = await fetch(`${BASE}/properties`);
+  return handleResponse<Property[]>(res);
+}
+
+export async function getAdminProperties(): Promise<Property[]> {
+  const res = await fetch(`${BASE}/admin/properties`, { headers: authHeaders() });
+  return handleResponse<Property[]>(res);
+}
+
+export async function createProperty(data: PropertyPayload): Promise<Property> {
+  const res = await fetch(`${BASE}/admin/properties`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Property>(res);
+}
+
+export async function updateProperty(id: number, data: Partial<PropertyPayload>): Promise<Property> {
+  const res = await fetch(`${BASE}/admin/properties/${id}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<Property>(res);
+}
+
+export async function deleteProperty(id: number): Promise<void> {
+  const res = await fetch(`${BASE}/admin/properties/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  });
+  await handleResponse<unknown>(res);
+}
+
+export async function uploadMultipleImages(files: File[]): Promise<string[]> {
+  const formData = new FormData();
+  files.forEach((f) => formData.append("images", f));
+  const res = await fetch(`${BASE}/admin/upload-multiple`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${getToken()}` },
+    body: formData,
+  });
+  const data = await handleResponse<{ urls: string[] }>(res);
+  return data.urls;
+}
+
 // ---- About Us ----
 
 export interface AboutUsService {

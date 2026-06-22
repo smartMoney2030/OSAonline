@@ -41,4 +41,13 @@ router.post("/admin/upload", requireAuth, upload.single("image"), (req, res) => 
   res.json({ url: `/api/uploads/${req.file.filename}` });
 });
 
+router.post("/admin/upload-multiple", requireAuth, upload.array("images", 20), (req, res) => {
+  const files = req.files as Express.Multer.File[] | undefined;
+  if (!files || files.length === 0) {
+    res.status(400).json({ error: "No files uploaded" });
+    return;
+  }
+  res.json({ urls: files.map((f) => `/api/uploads/${f.filename}`) });
+});
+
 export default router;

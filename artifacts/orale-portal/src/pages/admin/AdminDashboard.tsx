@@ -6,9 +6,11 @@ import {
   getContactSubmissions, deleteContactSubmission,
   getBusinessSubmissions, updateBusinessSubmissionStatus,
   getAboutUs, updateAboutUs,
+  getAdminProperties, createProperty, updateProperty, deleteProperty, uploadMultipleImages,
   type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission, type BusinessSubmission, type AboutUsContent,
+  type Property, type PropertyPayload,
 } from "@/lib/adminApi";
-import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle, Save, Upload, ImageIcon } from "lucide-react";
+import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle, Save, Upload, ImageIcon, Home } from "lucide-react";
 
 function useAuth() {
   const [, navigate] = useLocation();
@@ -36,6 +38,14 @@ const EMPTY_BUSINESS: BusinessPayload = {
   phone: null, websiteUrl: null, websiteLabel: null, youtubeUrl: null,
   imageUrl: null, commercialUrl: null,
   isComingSoon: false, isActive: true, sortOrder: 0,
+};
+
+const EMPTY_PROPERTY: PropertyPayload = {
+  title: "", address: "", city: "", state: "TX", zipCode: null,
+  price: "", bedrooms: null, bathrooms: null, sqft: null, lotSize: null,
+  propertyType: "House", yearBuilt: null, garage: null, description: "",
+  images: "[]", contactName: null, contactPhone: null, contactEmail: null,
+  status: "active", isActive: true, sortOrder: 0,
 };
 
 function ImageUpload({ value, onChange }: { value: string | null; onChange: (url: string | null) => void }) {
@@ -818,10 +828,307 @@ function AboutUsTab() {
   );
 }
 
+// ---- Multi-Image Upload ----
+function MultiImageUpload({ images, onChange }: { images: string[]; onChange: (urls: string[]) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    setUploading(true);
+    setError("");
+    try {
+      const urls = await uploadMultipleImages(files);
+      onChange([...images, ...urls]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  }
+
+  function remove(idx: number) {
+    onChange(images.filter((_, i) => i !== idx));
+  }
+
+  return (
+    <div className="space-y-3">
+      {images.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {images.map((url, i) => (
+            <div key={url} className="relative group aspect-video rounded-sm overflow-hidden bg-black border border-white/10">
+              <img src={url} alt={`photo ${i + 1}`} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => remove(i)}
+                className="absolute top-1 right-1 p-1 bg-black/70 rounded-full text-white hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+              >
+                <X size={12} />
+              </button>
+              {i === 0 && (
+                <span className="absolute bottom-1 left-1 text-[10px] bg-primary text-white px-1.5 py-0.5 rounded font-mono">Cover</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      <label className={`inline-flex items-center gap-2 px-4 py-2 rounded-sm text-sm cursor-pointer transition-colors font-mono border ${uploading ? "border-white/10 text-muted-foreground cursor-not-allowed" : "border-white/20 text-white hover:bg-white/5"}`}>
+        {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+        {uploading ? "Uploading…" : "Add Photos"}
+        <input type="file" accept="image/*" multiple className="hidden" disabled={uploading} onChange={handleFiles} />
+      </label>
+      {images.length > 0 && <p className="text-xs text-muted-foreground font-mono">{images.length} photo{images.length !== 1 ? "s" : ""} — first is the cover</p>}
+      {error && <p className="text-red-400 text-xs font-mono">{error}</p>}
+    </div>
+  );
+}
+
+// ---- For Sale Tab ----
+function ForSaleTab() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Property | null>(null);
+  const [form, setForm] = useState<PropertyPayload>(EMPTY_PROPERTY);
+  const [images, setImages] = useState<string[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try { setProperties(await getAdminProperties()); } catch { setError("Failed to load listings"); }
+    finally { setLoading(false); }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  function openCreate() {
+    setEditTarget(null);
+    setForm(EMPTY_PROPERTY);
+    setImages([]);
+    setModalOpen(true);
+  }
+
+  function openEdit(p: Property) {
+    setEditTarget(p);
+    const { id: _id, createdAt: _c, ...rest } = p;
+    setForm(rest);
+    try { setImages(JSON.parse(p.images) as string[]); } catch { setImages([]); }
+    setModalOpen(true);
+  }
+
+  async function handleSave() {
+    setSaving(true);
+    setError("");
+    const payload = { ...form, images: JSON.stringify(images) };
+    try {
+      if (editTarget) await updateProperty(editTarget.id, payload);
+      else await createProperty(payload);
+      setModalOpen(false);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm("Delete this listing?")) return;
+    try {
+      await deleteProperty(id);
+      await load();
+    } catch { setError("Delete failed"); }
+  }
+
+  function f(key: keyof PropertyPayload) {
+    return (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((prev) => ({ ...prev, [key]: e.target.value || null }));
+  }
+
+  function fNum(key: keyof PropertyPayload) {
+    return (e: React.ChangeEvent<HTMLInputElement>) =>
+      setForm((prev) => ({ ...prev, [key]: e.target.value ? Number(e.target.value) : null }));
+  }
+
+  const inputCls = "w-full bg-background border border-white/10 rounded-sm px-3 py-2 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors text-sm";
+  const selectCls = `${inputCls} cursor-pointer`;
+  const label = (text: string) => (
+    <label className="block text-xs font-mono text-muted-foreground uppercase tracking-widest mb-1">{text}</label>
+  );
+
+  const STATUS_BADGE: Record<string, string> = {
+    active: "bg-green-600/20 text-green-400 border-green-600/30",
+    pending: "bg-yellow-500/20 text-yellow-400 border-yellow-600/30",
+    sold: "bg-red-600/20 text-red-400 border-red-600/30",
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-display text-white">For Sale by Owner</h2>
+        <button onClick={openCreate} className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-bold hover:bg-primary/90 transition-colors">
+          <Plus size={14} /> Add Listing
+        </button>
+      </div>
+
+      {error && <p className="text-red-400 text-sm font-mono">{error}</p>}
+
+      {loading ? (
+        <div className="flex justify-center py-12"><Loader2 size={24} className="animate-spin text-muted-foreground" /></div>
+      ) : properties.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground border border-dashed border-white/10 rounded-sm">
+          <Home size={32} className="mb-3 opacity-40" />
+          <p className="text-sm">No listings yet. Click "Add Listing" to get started.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {properties.map((p) => {
+            let imgs: string[] = [];
+            try { imgs = JSON.parse(p.images) as string[]; } catch { imgs = []; }
+            return (
+              <div key={p.id} className="flex items-center gap-4 bg-card border border-white/10 rounded-sm p-4">
+                {imgs[0] ? (
+                  <img src={imgs[0]} alt={p.title} className="w-16 h-12 object-cover rounded-sm flex-shrink-0" />
+                ) : (
+                  <div className="w-16 h-12 bg-background rounded-sm flex-shrink-0 flex items-center justify-center border border-white/10">
+                    <Home size={16} className="text-muted-foreground/40" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-white font-bold text-sm truncate">{p.title}</p>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${STATUS_BADGE[p.status] ?? "bg-zinc-700/20 text-zinc-400 border-zinc-600/30"}`}>{p.status}</span>
+                    {!p.isActive && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-700/20 text-zinc-500 border border-zinc-600/30">Hidden</span>}
+                  </div>
+                  <p className="text-muted-foreground text-xs truncate">{p.address}, {p.city}, {p.state}</p>
+                  <p className="text-primary text-sm font-bold">{p.price}</p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <button onClick={() => openEdit(p)} className="p-2 text-muted-foreground hover:text-white transition-colors"><Pencil size={14} /></button>
+                  <button onClick={() => handleDelete(p.id)} className="p-2 text-muted-foreground hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {modalOpen && (
+        <Modal title={editTarget ? "Edit Listing" : "Add Listing"} onClose={() => setModalOpen(false)} onSave={handleSave} saving={saving}>
+          {error && <p className="text-red-400 text-xs font-mono">{error}</p>}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="col-span-2">
+              {label("Listing Title")}
+              <input className={inputCls} value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="3BR Home with Pool" />
+            </div>
+            <div className="col-span-2">
+              {label("Address")}
+              <input className={inputCls} value={form.address ?? ""} onChange={e => setForm(p => ({ ...p, address: e.target.value }))} placeholder="123 Main St" />
+            </div>
+            <div>
+              {label("City")}
+              <input className={inputCls} value={form.city ?? ""} onChange={e => setForm(p => ({ ...p, city: e.target.value }))} placeholder="San Antonio" />
+            </div>
+            <div>
+              {label("State")}
+              <input className={inputCls} value={form.state ?? "TX"} onChange={e => setForm(p => ({ ...p, state: e.target.value }))} placeholder="TX" />
+            </div>
+            <div>
+              {label("ZIP Code")}
+              <input className={inputCls} value={form.zipCode ?? ""} onChange={f("zipCode")} placeholder="78201" />
+            </div>
+            <div>
+              {label("Price")}
+              <input className={inputCls} value={form.price} onChange={e => setForm(p => ({ ...p, price: e.target.value }))} placeholder="$250,000" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              {label("Bedrooms")}
+              <input className={inputCls} type="number" value={form.bedrooms ?? ""} onChange={fNum("bedrooms")} placeholder="3" />
+            </div>
+            <div>
+              {label("Bathrooms")}
+              <input className={inputCls} value={form.bathrooms ?? ""} onChange={f("bathrooms")} placeholder="2.5" />
+            </div>
+            <div>
+              {label("Sq Ft")}
+              <input className={inputCls} type="number" value={form.sqft ?? ""} onChange={fNum("sqft")} placeholder="1800" />
+            </div>
+            <div>
+              {label("Lot Size")}
+              <input className={inputCls} value={form.lotSize ?? ""} onChange={f("lotSize")} placeholder="0.25 acres" />
+            </div>
+            <div>
+              {label("Year Built")}
+              <input className={inputCls} type="number" value={form.yearBuilt ?? ""} onChange={fNum("yearBuilt")} placeholder="2005" />
+            </div>
+            <div>
+              {label("Garage")}
+              <input className={inputCls} value={form.garage ?? ""} onChange={f("garage")} placeholder="2-car" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              {label("Property Type")}
+              <select className={selectCls} value={form.propertyType} onChange={e => setForm(p => ({ ...p, propertyType: e.target.value }))}>
+                {["House", "Condo", "Townhouse", "Land", "Mobile Home", "Multi-Family"].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              {label("Status")}
+              <select className={selectCls} value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))}>
+                <option value="active">For Sale (Active)</option>
+                <option value="pending">Pending</option>
+                <option value="sold">Sold</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            {label("Description")}
+            <textarea className={inputCls} rows={4} value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Describe the property…" style={{ resize: "none" }} />
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              {label("Contact Name")}
+              <input className={inputCls} value={form.contactName ?? ""} onChange={f("contactName")} placeholder="Jane Doe" />
+            </div>
+            <div>
+              {label("Contact Phone")}
+              <input className={inputCls} value={form.contactPhone ?? ""} onChange={f("contactPhone")} placeholder="(210) 555-0000" />
+            </div>
+            <div>
+              {label("Contact Email")}
+              <input className={inputCls} value={form.contactEmail ?? ""} onChange={f("contactEmail")} placeholder="owner@email.com" />
+            </div>
+          </div>
+
+          <div>
+            {label("Photos")}
+            <MultiImageUpload images={images} onChange={setImages} />
+          </div>
+
+          <Toggle checked={form.isActive} onChange={v => setForm(p => ({ ...p, isActive: v }))} label="Show listing publicly" />
+        </Modal>
+      )}
+    </div>
+  );
+}
+
 // ---- Dashboard Shell ----
 export default function AdminDashboard() {
   const { logout } = useAuth();
-  const [tab, setTab] = useState<"events" | "businesses" | "submissions" | "contacts" | "about">("events");
+  const [tab, setTab] = useState<"events" | "businesses" | "submissions" | "contacts" | "about" | "forsale">("events");
   const [businessesKey, setBusinessesKey] = useState(0);
 
   const tabs = [
@@ -829,6 +1136,7 @@ export default function AdminDashboard() {
     { key: "businesses" as const, label: "Business Listings" },
     { key: "submissions" as const, label: "Listing Requests" },
     { key: "contacts" as const, label: "Contact Submissions" },
+    { key: "forsale" as const, label: "For Sale" },
     { key: "about" as const, label: "About Us" },
   ];
 
@@ -871,6 +1179,7 @@ export default function AdminDashboard() {
           />
         )}
         {tab === "contacts" && <ContactTab />}
+        {tab === "forsale" && <ForSaleTab />}
         {tab === "about" && <AboutUsTab />}
       </main>
     </div>

@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import AboutUs from "@/pages/AboutUs";
 import BusinessCorner from "@/pages/BusinessCorner";
 import Events from "@/pages/Events";
+import ForSale from "@/pages/ForSale";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import Privacy from "@/pages/Privacy";
@@ -19,7 +20,8 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Business Corner", href: "/business-corner" },
-  { label: "Events", href: "/events" }
+  { label: "For Sale", href: "/for-sale" },
+  { label: "Events", href: "/events" },
 ];
 
 function NavBar() {
@@ -111,6 +113,7 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/about-us" component={AboutUs} />
         <Route path="/business-corner" component={BusinessCorner} />
+        <Route path="/for-sale" component={ForSale} />
         <Route path="/events" component={Events} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />

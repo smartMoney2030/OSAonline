@@ -7,6 +7,7 @@ import businessSubmissionsRouter from "./businessSubmissions.js";
 import contactRouter from "./contact.js";
 import aboutUsRouter from "./aboutUs.js";
 import uploadRouter from "./upload.js";
+import propertiesRouter from "./properties.js";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(businessSubmissionsRouter);
 router.use(contactRouter);
 router.use(aboutUsRouter);
 router.use(uploadRouter);
+router.use(propertiesRouter);
 
 export default router;
