@@ -1076,11 +1076,23 @@ function ForSaleTab() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              {label("Property Type")}
+              {label("Category")}
               <select className={selectCls} value={form.propertyType} onChange={e => setForm(p => ({ ...p, propertyType: e.target.value }))}>
-                {["House", "Condo", "Townhouse", "Land", "Mobile Home", "Multi-Family"].map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
+                <optgroup label="Real Estate">
+                  {["House", "Condo", "Townhouse", "Land", "Mobile Home", "Multi-Family", "Commercial"].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Vehicles">
+                  {["Car", "Truck", "SUV", "Van", "Motorcycle", "Boat", "RV / Motorhome", "ATV / UTV", "Commercial Vehicle"].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Other Items">
+                  {["Electronics", "Furniture", "Appliances", "Clothing", "Tools & Equipment", "Farm Equipment", "Livestock", "Business Equipment", "Other"].map(t => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </optgroup>
               </select>
             </div>
             <div>
