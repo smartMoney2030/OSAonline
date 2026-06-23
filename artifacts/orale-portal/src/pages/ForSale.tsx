@@ -558,6 +558,15 @@ export default function ForSale() {
         )}
       </section>
 
+      {/* Disclaimer */}
+      <section className="py-8 border-t border-zinc-800">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <p className="text-zinc-500 text-xs leading-relaxed max-w-2xl mx-auto">
+            <span className="font-semibold text-zinc-400">Disclaimer:</span> All ads and listings featured on this page are independent and are not associated with Órale Network and/or their affiliates. Órale Network makes no representations or warranties regarding the accuracy, completeness, or reliability of any listing.
+          </p>
+        </div>
+      </section>
+
       {/* Detail Modal */}
       {selected && (
         <PropertyDetailModal property={selected} onClose={() => setSelected(null)} />
