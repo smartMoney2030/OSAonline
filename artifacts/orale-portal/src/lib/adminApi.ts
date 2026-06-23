@@ -342,7 +342,7 @@ export async function submitForSaleListing(data: ForSaleSubmissionPayload): Prom
   const res = await fetch(`${BASE}/contact`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: data.name, email: data.email, message }),
+    body: JSON.stringify({ name: data.name, email: data.email, phone: data.phone, message }),
   });
   await handleResponse<{ success: boolean }>(res);
 }
