@@ -83,3 +83,21 @@ id = "1wdraqfT0M3XfNawYgsbU"
 uri = "file://attached_assets/stock_images/boat.jpg"
 type = "image"
 title = "center console fishing boat on water"
+
+[[outputs]]
+id = "wVoLGrimxZvkoYp5Utr9D"
+uri = "file://attached_assets/stock_images/motorcycle_1.jpg"
+type = "image"
+title = "Harley-Davidson touring motorcycle parked, side view, dark background"
+
+[[outputs]]
+id = "oh9KH5tMAAb5ADOU2aCPg"
+uri = "file://attached_assets/stock_images/motorcycle_2.jpg"
+type = "image"
+title = "Harley-Davidson touring motorcycle parked, side view, dark background"
+
+[[outputs]]
+id = "U57dwDZFDMPupgpiNwwlI"
+uri = "file://attached_assets/stock_images/motorcycle_3.jpg"
+type = "image"
+title = "Harley-Davidson touring motorcycle parked, side view, dark background"
