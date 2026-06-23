@@ -324,7 +324,7 @@ export default function ForSale() {
               <span className="text-primary">BY OWNER</span>
             </h1>
             <p className="text-zinc-400 text-lg max-w-xl">
-              From homes and land to cars and beyond — our community selling directly to each other, no middleman.
+              From homes and land to cars and beyond — our community selling directly to each other.
             </p>
           </motion.div>
         </div>
