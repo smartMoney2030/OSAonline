@@ -54,6 +54,15 @@ function ListYourItemModal({ onClose }: { onClose: () => void }) {
       setForm(prev => ({ ...prev, [field]: e.target.value }));
   }
 
+  function handlePhone(e: React.ChangeEvent<HTMLInputElement>) {
+    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+    let formatted = digits;
+    if (digits.length > 6) formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+    else if (digits.length > 3) formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+    else if (digits.length > 0) formatted = `(${digits}`;
+    setForm(prev => ({ ...prev, phone: formatted }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -157,7 +166,7 @@ function ListYourItemModal({ onClose }: { onClose: () => void }) {
                 </div>
                 <div>
                   <label className={labelCls}>Phone</label>
-                  <input type="tel" className={inputCls} placeholder="(210) 555-0100" value={form.phone} onChange={set("phone")} />
+                  <input type="tel" className={inputCls} placeholder="(210) 555-0100" value={form.phone} onChange={handlePhone} />
                 </div>
               </div>
             </div>
