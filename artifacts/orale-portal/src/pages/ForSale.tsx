@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bed, Bath, Square, MapPin, Phone, Mail, X, ChevronLeft, ChevronRight, Home, Calendar, Car, Maximize2 } from "lucide-react";
-import { getPublicProperties, type Property } from "@/lib/adminApi";
+import { getPublicProperties, submitForSaleListing, type Property } from "@/lib/adminApi";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -28,6 +28,156 @@ const STATUS_LABEL: Record<string, string> = {
   pending: "Pending",
   sold: "Sold",
 };
+
+// ---- List Your Item Modal ----
+
+const EMPTY_LISTING_FORM = {
+  name: "", email: "", phone: "", category: "House",
+  title: "", price: "", city: "", description: "",
+};
+
+const CATEGORIES = [
+  "House", "Condo", "Townhouse", "Land", "Mobile Home", "Multi-Family", "Commercial",
+  "Car", "Truck", "SUV", "Van", "Motorcycle", "Boat", "RV / Motorhome", "ATV / UTV",
+  "Electronics", "Furniture", "Appliances", "Tools & Equipment", "Farm Equipment", "Other",
+];
+
+function ListYourItemModal({ onClose }: { onClose: () => void }) {
+  const [form, setForm] = useState(EMPTY_LISTING_FORM);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  function set(field: keyof typeof EMPTY_LISTING_FORM) {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm(prev => ({ ...prev, [field]: e.target.value }));
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    try {
+      await submitForSaleListing({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        category: form.category,
+        title: form.title.trim(),
+        price: form.price.trim(),
+        city: form.city.trim(),
+        description: form.description.trim(),
+      });
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Submission failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputCls = "w-full bg-[#1a1a1a] border border-white/10 text-white placeholder-white/30 px-4 py-3 rounded-sm text-sm focus:outline-none focus:border-primary/60 transition-colors";
+  const labelCls = "block text-xs font-mono text-zinc-400 uppercase tracking-widest mb-1.5";
+
+  return (
+    <div
+      ref={overlayRef}
+      onClick={e => { if (e.target === overlayRef.current) onClose(); }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        transition={{ duration: 0.25 }}
+        className="relative w-full max-w-lg bg-[#111] border border-white/10 rounded-sm shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-white/5">
+          <div>
+            <p className="text-xs font-mono text-primary tracking-widest uppercase">Órale Network</p>
+            <h2 className="text-xl font-display text-white mt-0.5">List Your Item</h2>
+          </div>
+          <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors p-1">
+            <X size={20} />
+          </button>
+        </div>
+
+        {success ? (
+          <div className="px-6 py-12 text-center">
+            <div className="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+              <Mail size={28} className="text-primary" />
+            </div>
+            <h3 className="text-white text-lg font-bold mb-2">We got your listing!</h3>
+            <p className="text-zinc-400 text-sm mb-6">Our team will review your submission and be in touch soon.</p>
+            <button onClick={onClose} className="px-6 py-2.5 bg-primary text-white font-bold text-sm uppercase tracking-wider rounded-sm hover:bg-primary/90 transition-colors">
+              Close
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="px-6 py-6 space-y-4">
+            {/* Item info */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className={labelCls}>What are you selling? *</label>
+                <input required className={inputCls} placeholder="e.g. 2019 Ford F-150, 3BR House, Couch set…" value={form.title} onChange={set("title")} />
+              </div>
+              <div>
+                <label className={labelCls}>Category *</label>
+                <select required className={inputCls} value={form.category} onChange={set("category")}>
+                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className={labelCls}>Asking Price *</label>
+                <input required className={inputCls} placeholder="e.g. $15,000" value={form.price} onChange={set("price")} />
+              </div>
+              <div className="col-span-2">
+                <label className={labelCls}>City *</label>
+                <input required className={inputCls} placeholder="San Antonio, Austin, Houston…" value={form.city} onChange={set("city")} />
+              </div>
+              <div className="col-span-2">
+                <label className={labelCls}>Description</label>
+                <textarea className={inputCls} rows={3} placeholder="Describe your item — condition, features, why you're selling…" value={form.description} onChange={set("description")} />
+              </div>
+            </div>
+
+            {/* Contact info */}
+            <div className="border-t border-white/5 pt-4">
+              <p className="text-xs text-zinc-500 uppercase tracking-widest font-mono mb-3">Your Contact Info</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className={labelCls}>Full Name *</label>
+                  <input required className={inputCls} placeholder="First and last name" value={form.name} onChange={set("name")} />
+                </div>
+                <div>
+                  <label className={labelCls}>Email *</label>
+                  <input required type="email" className={inputCls} placeholder="you@email.com" value={form.email} onChange={set("email")} />
+                </div>
+                <div>
+                  <label className={labelCls}>Phone</label>
+                  <input type="tel" className={inputCls} placeholder="(210) 555-0100" value={form.phone} onChange={set("phone")} />
+                </div>
+              </div>
+            </div>
+
+            {error && <p className="text-red-400 text-sm">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full py-3.5 bg-primary text-white font-bold uppercase tracking-wider text-sm rounded-sm hover:bg-primary/90 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {submitting ? "Submitting…" : "Submit My Listing"}
+            </button>
+            <p className="text-xs text-zinc-600 text-center">Our team reviews all submissions before publishing.</p>
+          </form>
+        )}
+      </motion.div>
+    </div>
+  );
+}
 
 function SampleWatermark() {
   return (
@@ -326,6 +476,7 @@ export default function ForSale() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Property | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "pending" | "sold">("all");
+  const [listModalOpen, setListModalOpen] = useState(false);
 
   useEffect(() => {
     getPublicProperties()
@@ -350,6 +501,13 @@ export default function ForSale() {
             <p className="text-zinc-400 text-lg max-w-xl">
               From homes and land to cars and beyond — our community selling directly to each other.
             </p>
+            <motion.button
+              variants={fadeInUp}
+              onClick={() => setListModalOpen(true)}
+              className="mt-6 inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,100,0,0.4)]"
+            >
+              <Mail size={18} /> List Your Item
+            </motion.button>
           </motion.div>
         </div>
       </section>
@@ -404,6 +562,11 @@ export default function ForSale() {
       {selected && (
         <PropertyDetailModal property={selected} onClose={() => setSelected(null)} />
       )}
+
+      {/* List Your Item Modal */}
+      <AnimatePresence>
+        {listModalOpen && <ListYourItemModal onClose={() => setListModalOpen(false)} />}
+      </AnimatePresence>
     </div>
   );
 }

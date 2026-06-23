@@ -314,3 +314,35 @@ export async function updateAboutUs(data: AboutUsContent): Promise<AboutUsConten
   });
   return handleResponse<AboutUsContent>(res);
 }
+
+export interface ForSaleSubmissionPayload {
+  name: string;
+  email: string;
+  phone: string;
+  category: string;
+  title: string;
+  price: string;
+  city: string;
+  description: string;
+}
+
+export async function submitForSaleListing(data: ForSaleSubmissionPayload): Promise<void> {
+  const message = [
+    `FOR SALE SUBMISSION`,
+    `---`,
+    `Item: ${data.title}`,
+    `Category: ${data.category}`,
+    `Asking Price: ${data.price}`,
+    `City: ${data.city}`,
+    `Phone: ${data.phone}`,
+    `---`,
+    `Description: ${data.description}`,
+  ].join("\n");
+
+  const res = await fetch(`${BASE}/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: data.name, email: data.email, message }),
+  });
+  await handleResponse<{ success: boolean }>(res);
+}
