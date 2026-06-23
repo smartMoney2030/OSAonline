@@ -29,6 +29,26 @@ const STATUS_LABEL: Record<string, string> = {
   sold: "Sold",
 };
 
+function SampleWatermark() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden select-none">
+      <div
+        className="absolute inset-0 flex flex-wrap content-center justify-center gap-x-6 gap-y-4 opacity-25"
+        style={{ transform: "rotate(-30deg) scale(1.4)" }}
+      >
+        {Array.from({ length: 24 }).map((_, i) => (
+          <span
+            key={i}
+            className="text-white font-black uppercase tracking-widest text-lg drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+          >
+            Sample
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ImageGallery({ images, alt }: { images: string[]; alt: string }) {
   const [idx, setIdx] = useState(0);
   if (images.length === 0) {
@@ -41,6 +61,7 @@ function ImageGallery({ images, alt }: { images: string[]; alt: string }) {
   return (
     <div className="relative w-full overflow-hidden rounded-lg" style={{ aspectRatio: "16/9" }}>
       <img src={images[idx]} alt={`${alt} photo ${idx + 1}`} className="w-full h-full object-cover" />
+      <SampleWatermark />
       {images.length > 1 && (
         <>
           <button
@@ -239,11 +260,14 @@ function PropertyCard({ property, onClick }: { property: Property; onClick: () =
       {/* Photo */}
       <div className="relative overflow-hidden" style={{ aspectRatio: "16/10" }}>
         {images.length > 0 ? (
-          <img
-            src={images[0]}
-            alt={property.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+          <>
+            <img
+              src={images[0]}
+              alt={property.title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <SampleWatermark />
+          </>
         ) : (
           <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
             <Home className="w-12 h-12 text-zinc-600" />
