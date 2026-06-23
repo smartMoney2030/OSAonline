@@ -15,11 +15,11 @@ async function handleResponse<T>(res: Response): Promise<T> {
   const data = await res.json();
   if (!res.ok) {
     if (res.status === 429) {
-      throw new Error(
-        data.error ?? "Too many requests — please wait a few minutes before trying again."
-      );
+      throw new Error("Too many requests — please wait a few minutes before trying again.");
     }
-    throw new Error(data.error ?? `Request failed: ${res.status}`);
+    const err = data.error;
+    const msg = typeof err === "string" ? err : `Request failed: ${res.status}`;
+    throw new Error(msg);
   }
   return data as T;
 }
