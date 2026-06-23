@@ -101,3 +101,21 @@ id = "U57dwDZFDMPupgpiNwwlI"
 uri = "file://attached_assets/stock_images/motorcycle_3.jpg"
 type = "image"
 title = "Harley-Davidson touring motorcycle parked, side view, dark background"
+
+[[outputs]]
+id = "ZPQN5rHqKa7b92WJdpjn4"
+uri = "file://attached_assets/stock_images/starter_home_1.jpg"
+type = "image"
+title = "small cozy bungalow house exterior with front porch, residential neighborhood"
+
+[[outputs]]
+id = "sISQsIy7Ky4AWm1GiIs1i"
+uri = "file://attached_assets/stock_images/starter_home_2.jpg"
+type = "image"
+title = "small cozy bungalow house exterior with front porch, residential neighborhood"
+
+[[outputs]]
+id = "bxPEjvrNUfQh9JXXAO5ns"
+uri = "file://attached_assets/stock_images/starter_home_3.jpg"
+type = "image"
+title = "small cozy bungalow house exterior with front porch, residential neighborhood"
