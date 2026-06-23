@@ -28,6 +28,21 @@ export async function sendContactNotification(data: {
   });
 }
 
+export async function sendForSaleListingNotification(data: {
+  name: string;
+  email: string;
+  message: string;
+}) {
+  if (!process.env.GMAIL_APP_PASSWORD) return;
+  await transporter.sendMail({
+    from: "Orale Network <oralenetwork@gmail.com>",
+    to: "onlinenetwork7767@gmail.com",
+    subject: `New For Sale Listing from ${data.name}`,
+    text: `From: ${data.name} (${data.email})\n\n${data.message}`,
+    html: `<p><strong>From:</strong> ${data.name} (${data.email})</p><p style="white-space:pre-wrap">${data.message}</p>`,
+  });
+}
+
 export async function sendBusinessSubmissionNotification(data: {
   contactName: string;
   email: string;

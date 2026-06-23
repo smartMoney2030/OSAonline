@@ -3,7 +3,7 @@ import { db } from "@workspace/db";
 import { contactSubmissionsTable, insertContactSubmissionSchema } from "@workspace/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth.js";
-import { sendContactNotification } from "../lib/email.js";
+import { sendContactNotification, sendForSaleListingNotification } from "../lib/email.js";
 
 const router = Router();
 
@@ -15,7 +15,13 @@ router.post("/contact", async (req, res) => {
   }
   try {
     const [submission] = await db.insert(contactSubmissionsTable).values(parsed.data).returning();
-    sendContactNotification({ name: parsed.data.name, email: parsed.data.email, message: parsed.data.message ?? "" }).catch((err: unknown) => req.log.error(err));
+    const msg = parsed.data.message ?? "";
+    const isForSale = msg.startsWith("FOR SALE SUBMISSION");
+    if (isForSale) {
+      sendForSaleListingNotification({ name: parsed.data.name, email: parsed.data.email, message: msg }).catch((err: unknown) => req.log.error(err));
+    } else {
+      sendContactNotification({ name: parsed.data.name, email: parsed.data.email, message: msg }).catch((err: unknown) => req.log.error(err));
+    }
     res.status(201).json({ success: true, id: submission.id });
   } catch (err) {
     req.log.error(err);
