@@ -22,6 +22,7 @@ const navLinks = [
   { label: "Business Corner", href: "/business-corner" },
   { label: "For Sale", href: "/for-sale" },
   { label: "Events", href: "/events" },
+  { label: "Radio Station", href: "https://osaradio.com/", external: true },
 ];
 
 function NavBar() {
@@ -55,19 +56,31 @@ function NavBar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-bold uppercase tracking-wider transition-colors ${
-                  location === link.href
-                    ? "text-primary"
-                    : "text-white/70 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.external ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-bold uppercase tracking-wider transition-colors text-white/70 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-sm font-bold uppercase tracking-wider transition-colors ${
+                    location === link.href
+                      ? "text-primary"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* Mobile Hamburger */}
@@ -85,17 +98,29 @@ function NavBar() {
         {/* Mobile Menu */}
         {menuOpen && (
           <nav className="md:hidden pb-4 flex flex-col gap-4 border-t border-white/10 pt-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-bold uppercase tracking-wider transition-colors ${
-                  location === link.href ? "text-primary" : "text-white/70 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.external ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-bold uppercase tracking-wider transition-colors text-white/70 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-sm font-bold uppercase tracking-wider transition-colors ${
+                    location === link.href ? "text-primary" : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </nav>
         )}
       </div>
