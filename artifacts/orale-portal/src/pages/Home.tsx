@@ -59,7 +59,7 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 flex items-center gap-3 rounded-sm border border-primary-border shadow-[0_0_30px_rgba(200,20,40,0.4)]"
               >
-                Added Bonus- Orale Custom Youtube Channel <Play size={18} fill="currentColor" />
+                Orale Network T.V. Interview Shows <Play size={18} fill="currentColor" />
               </a>
               <button
                 onClick={() => setContactOpen(true)}
