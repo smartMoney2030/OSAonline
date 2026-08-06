@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bed, Bath, Square, MapPin, Phone, Mail, X, ChevronLeft, ChevronRight, Home, Calendar, Car, Maximize2 } from "lucide-react";
+import { Link } from "wouter";
 import { getPublicProperties, submitForSaleListing, type Property } from "@/lib/adminApi";
 
 const fadeInUp = {
@@ -407,15 +408,15 @@ function PropertyDetailModal({ property, onClose }: { property: Property; onClos
   );
 }
 
-function PropertyCard({ property, onClick }: { property: Property; onClick: () => void }) {
+function PropertyCard({ property }: { property: Property }) {
   const images = parseImages(property.images);
 
   return (
     <motion.div
       variants={fadeInUp}
-      className="bg-zinc-900 border border-white/10 rounded-xl overflow-hidden cursor-pointer hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
-      onClick={onClick}
+      className="bg-zinc-900 border border-white/10 rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group"
     >
+      <Link href={`/for-sale/${property.id}`} className="block">
       {/* Photo */}
       <div className="relative overflow-hidden" style={{ aspectRatio: "16/10" }}>
         {images.length > 0 ? (
@@ -476,6 +477,7 @@ function PropertyCard({ property, onClick }: { property: Property; onClick: () =
           <span className="ml-auto text-xs text-zinc-500">{property.propertyType}</span>
         </div>
       </div>
+      </Link>
     </motion.div>
   );
 }
@@ -483,7 +485,6 @@ function PropertyCard({ property, onClick }: { property: Property; onClick: () =
 export default function ForSale() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<Property | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "pending" | "sold">("all");
   const [listModalOpen, setListModalOpen] = useState(false);
 
@@ -561,7 +562,7 @@ export default function ForSale() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {filtered.map((p) => (
-              <PropertyCard key={p.id} property={p} onClick={() => setSelected(p)} />
+              <PropertyCard key={p.id} property={p} />
             ))}
           </motion.div>
         )}
@@ -575,11 +576,6 @@ export default function ForSale() {
           </p>
         </div>
       </section>
-
-      {/* Detail Modal */}
-      {selected && (
-        <PropertyDetailModal property={selected} onClose={() => setSelected(null)} />
-      )}
 
       {/* List Your Item Modal */}
       <AnimatePresence>

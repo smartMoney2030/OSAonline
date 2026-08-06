@@ -8,7 +8,9 @@ import Home from "@/pages/Home";
 import AboutUs from "@/pages/AboutUs";
 import BusinessCorner from "@/pages/BusinessCorner";
 import Events from "@/pages/Events";
+import EventDetail from "@/pages/EventDetail";
 import ForSale from "@/pages/ForSale";
+import PropertyDetail from "@/pages/PropertyDetail";
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import Privacy from "@/pages/Privacy";
@@ -139,7 +141,9 @@ function Router() {
         <Route path="/about-us" component={AboutUs} />
         <Route path="/business-corner" component={BusinessCorner} />
         <Route path="/for-sale" component={ForSale} />
+        <Route path="/for-sale/:id" component={PropertyDetail} />
         <Route path="/events" component={Events} />
+        <Route path="/events/:id" component={EventDetail} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route path="/admin" component={AdminLogin} />

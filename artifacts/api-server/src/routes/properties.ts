@@ -6,6 +6,29 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
+// Public: get single active property by id
+router.get("/properties/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) {
+    res.status(400).json({ error: "Invalid id" });
+    return;
+  }
+  try {
+    const [property] = await db
+      .select()
+      .from(propertiesTable)
+      .where(eq(propertiesTable.id, id));
+    if (!property || !property.isActive) {
+      res.status(404).json({ error: "Property not found" });
+      return;
+    }
+    res.json(property);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to fetch property" });
+  }
+});
+
 // Public: list active properties
 router.get("/properties", async (req, res) => {
   try {

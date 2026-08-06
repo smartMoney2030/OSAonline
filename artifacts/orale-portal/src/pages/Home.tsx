@@ -41,10 +41,12 @@ export default function Home() {
             className="max-w-4xl"
           >
             <motion.div variants={fadeInUp} className="mb-6">
+              <h1 className="sr-only">Órale Network — Premier Business Consulting &amp; Multimedia Streaming</h1>
               <img
                 src="/orale-logo.png"
                 alt="Órale Network"
                 className="w-72 md:w-96 object-contain"
+                aria-hidden="true"
               />
             </motion.div>
             

@@ -54,6 +54,11 @@ export async function getPublicEvents(): Promise<Event[]> {
   return handleResponse<Event[]>(res);
 }
 
+export async function getPublicEventById(id: number): Promise<Event> {
+  const res = await fetch(`${BASE}/events/${id}`);
+  return handleResponse<Event>(res);
+}
+
 export async function createEvent(data: EventPayload): Promise<Event> {
   const res = await fetch(`${BASE}/admin/events`, {
     method: "POST",
@@ -238,6 +243,11 @@ export type PropertyPayload = Omit<Property, "id" | "createdAt">;
 export async function getPublicProperties(): Promise<Property[]> {
   const res = await fetch(`${BASE}/properties`);
   return handleResponse<Property[]>(res);
+}
+
+export async function getPublicPropertyById(id: number): Promise<Property> {
+  const res = await fetch(`${BASE}/properties/${id}`);
+  return handleResponse<Property>(res);
 }
 
 export async function getAdminProperties(): Promise<Property[]> {

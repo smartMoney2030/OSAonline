@@ -40,10 +40,10 @@ export default function AboutUs() {
           variants={staggerContainer}
           className="max-w-5xl mx-auto"
         >
-          <motion.h2 variants={fadeInUp} className="text-sm font-mono text-secondary tracking-widest uppercase mb-4">About Us</motion.h2>
-          <motion.h3 variants={fadeInUp} className="text-4xl md:text-5xl font-display text-white mb-8 leading-tight">
+          <motion.h1 variants={fadeInUp} className="text-sm font-mono text-secondary tracking-widest uppercase mb-4">About Órale Network</motion.h1>
+          <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-display text-white mb-8 leading-tight">
             {content.headline}<br/><span className="italic text-secondary">{content.headlineItalic}</span>
-          </motion.h3>
+          </motion.h2>
           <motion.p variants={fadeInUp} className="text-lg text-muted-foreground mb-6 max-w-3xl leading-relaxed">
             {content.intro1}
           </motion.p>

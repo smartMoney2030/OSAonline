@@ -6,6 +6,29 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
+// Public: get single active event by id
+router.get("/events/:id", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) {
+    res.status(400).json({ error: "Invalid id" });
+    return;
+  }
+  try {
+    const [event] = await db
+      .select()
+      .from(eventsTable)
+      .where(eq(eventsTable.id, id));
+    if (!event || !event.isActive) {
+      res.status(404).json({ error: "Event not found" });
+      return;
+    }
+    res.json(event);
+  } catch (err) {
+    req.log.error(err);
+    res.status(500).json({ error: "Failed to fetch event" });
+  }
+});
+
 // Public: list active events
 router.get("/events", async (req, res) => {
   try {

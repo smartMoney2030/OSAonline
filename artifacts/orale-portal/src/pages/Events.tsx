@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CalendarDays, MapPin, ExternalLink, Ticket, Loader2 } from "lucide-react";
+import { Link } from "wouter";
 import { getPublicEvents, type Event } from "@/lib/adminApi";
 
 const fadeInUp = {
@@ -20,14 +21,16 @@ function EventCard({ event }: { event: Event }) {
       className="bg-card border border-white/5 hover:border-secondary/40 transition-colors rounded-sm overflow-hidden"
     >
       {event.imageUrl && (
-        <div className="w-full bg-black flex items-center justify-center border-b border-white/5">
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="w-full max-h-[560px] object-contain object-center"
-            loading="lazy"
-          />
-        </div>
+        <Link href={`/events/${event.id}`} className="block">
+          <div className="w-full bg-black flex items-center justify-center border-b border-white/5">
+            <img
+              src={event.imageUrl}
+              alt={event.title}
+              className="w-full max-h-[560px] object-contain object-center"
+              loading="lazy"
+            />
+          </div>
+        </Link>
       )}
 
       <div className="p-8 md:p-10">
@@ -44,7 +47,9 @@ function EventCard({ event }: { event: Event }) {
           )}
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-display text-white mb-2">{event.title}</h2>
+        <Link href={`/events/${event.id}`}>
+          <h2 className="text-3xl md:text-4xl font-display text-white mb-2 hover:text-secondary transition-colors">{event.title}</h2>
+        </Link>
         {event.subtitle && (
           <p className="text-secondary font-bold uppercase tracking-wider text-sm mb-6">{event.subtitle}</p>
         )}
@@ -82,16 +87,24 @@ function EventCard({ event }: { event: Event }) {
           )}
         </div>
 
-        {event.ticketUrl && (
-          <a
-            href={event.ticketUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 rounded-sm border border-primary-border shadow-[0_0_20px_rgba(200,100,0,0.3)]"
+        <div className="flex flex-wrap items-center gap-4">
+          {event.ticketUrl && (
+            <a
+              href={event.ticketUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground font-bold font-display uppercase tracking-wider hover:bg-primary/90 transition-all active:scale-95 rounded-sm border border-primary-border shadow-[0_0_20px_rgba(200,100,0,0.3)]"
+            >
+              Get Tickets <ExternalLink size={16} />
+            </a>
+          )}
+          <Link
+            href={`/events/${event.id}`}
+            className="text-sm font-mono text-muted-foreground hover:text-white uppercase tracking-widest transition-colors"
           >
-            Get Tickets <ExternalLink size={16} />
-          </a>
-        )}
+            View Details →
+          </Link>
+        </div>
       </div>
     </motion.div>
   );
