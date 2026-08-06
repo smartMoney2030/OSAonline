@@ -243,6 +243,54 @@ export default function Home() {
         </div>
       </section>
 
+      {/* SHOW THUMBNAILS */}
+      <section className="py-16 border-t border-white/5 bg-black">
+        <div className="container mx-auto px-6">
+          <motion.h3
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            variants={fadeInUp}
+            className="text-center text-sm font-mono text-secondary tracking-widest uppercase mb-10"
+          >
+            Watch Our Shows
+          </motion.h3>
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+          >
+            {[
+              { src: "/show1.jpg", alt: "Órale San Antonio T.V. Show", href: "https://www.youtube.com/watch?v=1NmMZYaI80w&list=PLYWy2SeuTOL1lZqeKvOwLg5urkCdpLTwR" },
+              { src: "/show2.jpg", alt: "T&T – The Art of Living", href: "https://www.youtube.com/watch?v=SEQxSdvYwPY&list=PLYWy2SeuTOL3vGo49OWULoGGY7IjUl0zS" },
+              { src: "/show3.jpg", alt: "Órale San Antonio – Real Estate Edition", href: "https://www.youtube.com/watch?v=RYUdnLAY2wU&list=PLYWy2SeuTOL1fpCE-t1YWs1al264bujZQ" },
+              { src: "/show4.jpg", alt: "The Monty Show", href: "https://www.youtube.com/watch?v=3v3HFnuN7Tk&list=PLYWy2SeuTOL19ISEx2Y3h8gWZkSrorivM" },
+            ].map((show) => (
+              <motion.a
+                key={show.href}
+                href={show.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                variants={fadeInUp}
+                className="group relative overflow-hidden rounded-sm border border-white/10 hover:border-primary/50 transition-colors"
+              >
+                <img
+                  src={show.src}
+                  alt={show.alt}
+                  className="w-full aspect-video object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                  <div className="w-12 h-12 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
+                    <Play size={20} fill="white" className="text-white ml-1" />
+                  </div>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
+                  <p className="text-white text-xs font-medium truncate">{show.alt}</p>
+                </div>
+              </motion.a>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* 7. FOOTER / CONTACT */}
       {contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}
       <footer className="bg-black pt-24 pb-12 border-t border-white/10">
