@@ -20,9 +20,9 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Business Corner", href: "/business-corner" },
+  { label: "Radio Station", href: "https://osaradio.com/", external: true },
   { label: "For Sale", href: "/for-sale" },
   { label: "Events", href: "/events" },
-  { label: "Radio Station", href: "https://osaradio.com/", external: true },
 ];
 
 function NavBar() {
