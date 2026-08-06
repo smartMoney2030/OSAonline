@@ -68,6 +68,15 @@ export default function Home() {
                 Elevate Your Brand
               </button>
             </motion.div>
+
+            <motion.div variants={fadeInUp} className="mt-4 space-y-2">
+              <p className="text-zinc-300 text-sm font-medium tracking-wide">
+                As seen on Roku · Android T.V. · Amazon · Comcast · Apple T.V. · Fire T.V. · Google T.V. · YouTube and all major social media platforms!
+              </p>
+              <p className="text-zinc-400 text-sm italic">
+                T.V. Interview shows catering to Entrepreneurships, Non-Profits, Entertainment, Business, Real Estate, Medical, Law and much more!
+              </p>
+            </motion.div>
           </motion.div>
         </div>
       </section>
