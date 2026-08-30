@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Phone, ExternalLink, Loader2, X, CheckCircle2 } from "lucide-react";
 import { getPublicBusinesses, submitBusinessListing, type Business } from "@/lib/adminApi";
+import { normalizeWebsiteUrl } from "@/lib/websiteUrl";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -68,7 +69,7 @@ function GetListedModal({ onClose }: GetListedModalProps) {
         phone: form.phone.trim(),
         email: form.email.trim(),
         city: form.city,
-        websiteUrl: form.websiteUrl.trim() || null,
+        websiteUrl: normalizeWebsiteUrl(form.websiteUrl),
         description: form.description.trim() || null,
       });
       setSuccess(true);
@@ -308,7 +309,7 @@ function BusinessCard({ b }: { b: Business }) {
           )}
           {b.websiteUrl && (
             <a
-              href={b.websiteUrl}
+              href={normalizeWebsiteUrl(b.websiteUrl) ?? undefined}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-primary font-bold text-sm hover:text-primary/80 transition-colors uppercase tracking-wider"

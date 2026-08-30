@@ -10,6 +10,7 @@ import {
   type Event, type Business, type EventPayload, type BusinessPayload, type ContactSubmission, type BusinessSubmission, type AboutUsContent,
   type Property, type PropertyPayload,
 } from "@/lib/adminApi";
+import { normalizeWebsiteUrl } from "@/lib/websiteUrl";
 import { Pencil, Trash2, Plus, LogOut, X, Check, Loader2, Mail, ArrowUpCircle, Save, Upload, ImageIcon, Home } from "lucide-react";
 
 function useAuth() {
@@ -339,8 +340,9 @@ function BusinessesTab() {
     setSaving(true);
     setError("");
     try {
-      if (editTarget) await updateBusiness(editTarget.id, form);
-      else await createBusiness(form);
+      const payload = { ...form, websiteUrl: normalizeWebsiteUrl(form.websiteUrl) };
+      if (editTarget) await updateBusiness(editTarget.id, payload);
+      else await createBusiness(payload);
       setModalOpen(false);
       await load();
     } catch (err: unknown) {
@@ -502,7 +504,10 @@ function SubmissionsTab({ onPromoted }: { onPromoted?: () => void }) {
     setPromoting(true);
     setPromoteError("");
     try {
-      await createBusiness(promoteForm);
+      await createBusiness({
+        ...promoteForm,
+        websiteUrl: normalizeWebsiteUrl(promoteForm.websiteUrl),
+      });
       await updateBusinessSubmissionStatus(promoteTarget.id, "approved");
       setPromoteTarget(null);
       await load();
@@ -559,7 +564,7 @@ function SubmissionsTab({ onPromoted }: { onPromoted?: () => void }) {
                     <span className="text-muted-foreground text-sm">{s.contactName}</span>
                     <a href={`tel:${s.phone}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.phone}</a>
                     <a href={`mailto:${s.email}`} className="text-muted-foreground text-sm hover:text-white transition-colors">{s.email}</a>
-                    {s.websiteUrl && <a href={s.websiteUrl} target="_blank" rel="noreferrer" className="text-muted-foreground text-sm hover:text-white transition-colors truncate max-w-xs">{s.websiteUrl}</a>}
+                    {s.websiteUrl && <a href={normalizeWebsiteUrl(s.websiteUrl) ?? undefined} target="_blank" rel="noreferrer" className="text-muted-foreground text-sm hover:text-white transition-colors truncate max-w-xs">{s.websiteUrl}</a>}
                   </div>
                   {s.description && <p className="text-muted-foreground text-xs mt-2 line-clamp-2">{s.description}</p>}
                   <p className="text-muted-foreground text-xs mt-1 font-mono">{formatDate(s.createdAt)}</p>
