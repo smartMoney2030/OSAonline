@@ -1,0 +1,1 @@
+- [Persistent uploaded media](persistent-uploaded-media.md) — Store admin-uploaded media in App Storage; runtime-local upload folders are not durable across publishes.

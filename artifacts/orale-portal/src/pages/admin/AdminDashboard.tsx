@@ -59,16 +59,37 @@ function ImageUpload({ value, onChange }: { value: string | null; onChange: (url
     setUploading(true);
     setError("");
     try {
-      const fd = new FormData();
-      fd.append("image", file);
-      const res = await fetch("/api/admin/upload", {
+      const requestUrlResponse = await fetch("/api/storage/uploads/request-url", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: file.name,
+          size: file.size,
+          contentType: file.type,
+        }),
       });
-      const data = await res.json() as { url?: string; error?: string };
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
-      onChange(data.url!);
+      const uploadData = await requestUrlResponse.json() as {
+        uploadURL?: string;
+        objectPath?: string;
+        error?: string;
+      };
+      if (!requestUrlResponse.ok || !uploadData.uploadURL || !uploadData.objectPath) {
+        throw new Error(uploadData.error ?? "Upload failed");
+      }
+
+      const uploadResponse = await fetch(uploadData.uploadURL, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!uploadResponse.ok) {
+        throw new Error("Image upload failed. Please try again.");
+      }
+
+      onChange(`/api/storage${uploadData.objectPath}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {

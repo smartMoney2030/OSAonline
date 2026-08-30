@@ -8,6 +8,7 @@ import contactRouter from "./contact.js";
 import aboutUsRouter from "./aboutUs.js";
 import uploadRouter from "./upload.js";
 import propertiesRouter from "./properties.js";
+import storageRouter from "./storage.js";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use(contactRouter);
 router.use(aboutUsRouter);
 router.use(uploadRouter);
 router.use(propertiesRouter);
+router.use(storageRouter);
 
 export default router;
