@@ -1,1 +1,2 @@
 - [Persistent uploaded media](persistent-uploaded-media.md) — Store admin-uploaded media in App Storage; runtime-local upload folders are not durable across publishes.
+- [GitHub full-repository pushes](github-full-repository-pushes.md) — For full syncs, prefer a temporary SSH deploy key when connector API payload filtering blocks repository files.
