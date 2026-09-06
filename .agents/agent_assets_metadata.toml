@@ -35,87 +35,116 @@ id = "-Ieymixkn2hgHG5vwAZhp"
 uri = "file://attached_assets/stock_images/car.jpg"
 type = "image"
 title = "yellow sports car parked on a road, side view"
+logical_id = "f7ccb2ff-a538-4fd0-8457-e8243a78e398"
 
 [[outputs]]
 id = "dEw_qJCo2HcN-4d8SgZjV"
 uri = "file://attached_assets/stock_images/house.jpg"
 type = "image"
 title = "modern suburban family house exterior with front yard, daytime"
+logical_id = "a2a51822-e7ce-4ca9-997d-b077a6d395bb"
 
 [[outputs]]
 id = "UApnafXckAdRE8J4Hp-vf"
 uri = "file://attached_assets/stock_images/condo.jpg"
 type = "image"
 title = "modern downtown high-rise condo apartment building exterior"
+logical_id = "d9a1fed7-6a76-4ed3-94ae-165ec4ff1e0b"
 
 [[outputs]]
 id = "di91UisYKpFFs3mrmEsQy"
 uri = "file://attached_assets/stock_images/townhouse.jpg"
 type = "image"
 title = "row of modern townhomes with garages, residential street"
+logical_id = "b98c26f8-ccd3-49da-a00e-a78bb3264cfe"
 
 [[outputs]]
 id = "wlTq9HK8-gqzTHRP9eBoL"
 uri = "file://attached_assets/stock_images/motorcycle.jpg"
 type = "image"
 title = "black touring motorcycle parked, side profile"
+logical_id = "1b3e74c7-f1a6-4d50-89bb-c1a03ce096a6"
 
 [[outputs]]
 id = "85BHLynv21_3c145BQCBI"
 uri = "file://attached_assets/stock_images/rv.jpg"
 type = "image"
 title = "class c motorhome RV parked outdoors"
+logical_id = "3376aeef-4931-4c85-a7cb-321942f91f1f"
 
 [[outputs]]
 id = "_Z0TNd4qe4YWJ1jAVBwjO"
 uri = "file://attached_assets/stock_images/tractor.jpg"
 type = "image"
 title = "green farm tractor in a field"
+logical_id = "4ac63f63-c729-4545-a86a-2a795910e156"
 
 [[outputs]]
 id = "LyuRxRBnfDwyEBL6aBj3C"
 uri = "file://attached_assets/stock_images/starter.jpg"
 type = "image"
 title = "small cozy single story bungalow house with trees"
+logical_id = "50bba0e3-7c05-4e1a-aaf1-7d7494d33130"
 
 [[outputs]]
 id = "1wdraqfT0M3XfNawYgsbU"
 uri = "file://attached_assets/stock_images/boat.jpg"
 type = "image"
 title = "center console fishing boat on water"
+logical_id = "12132bbb-ad80-4bea-ac99-4209bfa23fb4"
 
 [[outputs]]
 id = "wVoLGrimxZvkoYp5Utr9D"
 uri = "file://attached_assets/stock_images/motorcycle_1.jpg"
 type = "image"
 title = "Harley-Davidson touring motorcycle parked, side view, dark background"
+logical_id = "618fdfd4-d72c-4196-bf9d-625390724883"
 
 [[outputs]]
 id = "oh9KH5tMAAb5ADOU2aCPg"
 uri = "file://attached_assets/stock_images/motorcycle_2.jpg"
 type = "image"
 title = "Harley-Davidson touring motorcycle parked, side view, dark background"
+logical_id = "3cdb91d8-528e-48be-abbe-49b2dcf6e3c5"
 
 [[outputs]]
 id = "U57dwDZFDMPupgpiNwwlI"
 uri = "file://attached_assets/stock_images/motorcycle_3.jpg"
 type = "image"
 title = "Harley-Davidson touring motorcycle parked, side view, dark background"
+logical_id = "aa577890-27cf-401c-be05-a0a5e0d0a1f0"
 
 [[outputs]]
 id = "ZPQN5rHqKa7b92WJdpjn4"
 uri = "file://attached_assets/stock_images/starter_home_1.jpg"
 type = "image"
 title = "small cozy bungalow house exterior with front porch, residential neighborhood"
+logical_id = "cdd6cf0a-9219-49c8-99bd-ac83031198f7"
 
 [[outputs]]
 id = "sISQsIy7Ky4AWm1GiIs1i"
 uri = "file://attached_assets/stock_images/starter_home_2.jpg"
 type = "image"
 title = "small cozy bungalow house exterior with front porch, residential neighborhood"
+logical_id = "d94b5645-112a-41d4-b5f8-3e1ab85551d3"
 
 [[outputs]]
 id = "bxPEjvrNUfQh9JXXAO5ns"
 uri = "file://attached_assets/stock_images/starter_home_3.jpg"
 type = "image"
 title = "small cozy bungalow house exterior with front porch, residential neighborhood"
+logical_id = "26cea095-7897-4068-a0a3-55de4807122d"
+
+[[outputs]]
+id = "Fp-S9a0dsZjQJ0G5fiqzL"
+uri = "file://generated/oraleonline-qr.png"
+type = "image"
+title = "ÓraleOnline.com QR Code"
+description = "High-resolution QR code linking to https://oraleonline.com with the orange Órale! logo centered."
+logical_id = "db393034-c461-43b9-994a-886acc4a921d"
+content_hash = "sha256:7e0cf3234b0510c8513c1551968f4e4178eb0115f6a5585b921fdce6365d7059"
+size = 37540
+mtime_ms = 1788703968151
+storage_uri = "gcs://replit-rams-assets-kirk/rams/assets/repl:93ede77f-882c-47d6-a09d-0529e93ce44d/db393034-c461-43b9-994a-886acc4a921d/2e9fc42a-9896-4305-b50a-df3da648687f"
+storage_version_token = "1788703978669066"
+content_type = "image/png"
