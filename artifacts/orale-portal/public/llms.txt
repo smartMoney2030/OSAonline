@@ -1,0 +1,18 @@
+# Órale Network Portal
+
+> The Órale Network Portal is the official online home of the Órale Network — a community-driven platform celebrating Latino culture, business, and connection across Texas and beyond. The portal highlights upcoming community events, a curated directory of Latino-owned businesses (the Órale Business Corner), properties for sale, and resources for the broader Órale community.
+
+## Key Sections
+
+- [Home](https://oraleonline.com/): Overview of the Órale Network, featured events, and community highlights.
+- [About Us](https://oraleonline.com/about-us): Background on the Órale Network, its mission, and its community roots.
+- [Events](https://oraleonline.com/events): Upcoming community events organized by the Órale Network.
+- [Business Corner](https://oraleonline.com/business-corner): Directory of Latino-owned and community-supported businesses, organized by city.
+- [For Sale](https://oraleonline.com/for-sale): Community marketplace for properties and items listed by the Órale Network.
+- [Privacy Policy](https://oraleonline.com/privacy): How the Órale Network handles user data and privacy.
+- [Terms of Service](https://oraleonline.com/terms): Terms governing use of the Órale Network Portal.
+
+## Contact
+
+- Email: oralenetwork@gmail.com
+- Website: https://oraleonline.com/
