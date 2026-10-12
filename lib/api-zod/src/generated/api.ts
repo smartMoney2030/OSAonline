@@ -9,6 +9,218 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Active Paying Forward advertisements
+ */
+export const getPayingForwardAdsResponseOneTitleMax = 200;
+
+export const getPayingForwardAdsResponseOneImageUrlMax = 2000;
+
+export const getPayingForwardAdsResponseOneLinkUrlMax = 2000;
+
+export const getPayingForwardAdsResponseOneSortOrderMin = 0;
+
+
+
+export const GetPayingForwardAdsResponseItem = zod.object({
+  "title": zod.string().min(1).max(getPayingForwardAdsResponseOneTitleMax),
+  "imageUrl": zod.string().min(1).max(getPayingForwardAdsResponseOneImageUrlMax),
+  "linkUrl": zod.string().max(getPayingForwardAdsResponseOneLinkUrlMax),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number().min(getPayingForwardAdsResponseOneSortOrderMin)
+}).and(zod.object({
+  "id": zod.number()
+}))
+export const GetPayingForwardAdsResponse = zod.array(GetPayingForwardAdsResponseItem)
+
+
+/**
+ * @summary Save a business application and notify the team by email
+ */
+export const submitPayingForwardApplicationBodyBusinessNameMax = 200;
+
+export const submitPayingForwardApplicationBodyOwnerNameMax = 200;
+
+export const submitPayingForwardApplicationBodyPhoneMin = 10;
+export const submitPayingForwardApplicationBodyPhoneMax = 30;
+
+export const submitPayingForwardApplicationBodyWebsiteUrlMax = 2000;
+
+export const submitPayingForwardApplicationBodyServicesMax = 5000;
+
+export const submitPayingForwardApplicationBodyAddressMax = 300;
+
+export const submitPayingForwardApplicationBodyCityMax = 100;
+
+export const submitPayingForwardApplicationBodyStateMin = 2;
+export const submitPayingForwardApplicationBodyStateMax = 50;
+
+export const submitPayingForwardApplicationBodyZipCodeMin = 5;
+export const submitPayingForwardApplicationBodyZipCodeMax = 10;
+
+export const submitPayingForwardApplicationBodyCommentsMax = 5000;
+
+
+
+export const SubmitPayingForwardApplicationBody = zod.object({
+  "businessName": zod.string().min(1).max(submitPayingForwardApplicationBodyBusinessNameMax),
+  "ownerName": zod.string().min(1).max(submitPayingForwardApplicationBodyOwnerNameMax),
+  "phone": zod.string().min(submitPayingForwardApplicationBodyPhoneMin).max(submitPayingForwardApplicationBodyPhoneMax),
+  "hasWebsite": zod.boolean(),
+  "websiteUrl": zod.string().max(submitPayingForwardApplicationBodyWebsiteUrlMax),
+  "services": zod.string().min(1).max(submitPayingForwardApplicationBodyServicesMax),
+  "address": zod.string().min(1).max(submitPayingForwardApplicationBodyAddressMax),
+  "city": zod.string().min(1).max(submitPayingForwardApplicationBodyCityMax),
+  "state": zod.string().min(submitPayingForwardApplicationBodyStateMin).max(submitPayingForwardApplicationBodyStateMax),
+  "zipCode": zod.string().min(submitPayingForwardApplicationBodyZipCodeMin).max(submitPayingForwardApplicationBodyZipCodeMax),
+  "comments": zod.string().max(submitPayingForwardApplicationBodyCommentsMax),
+  "companyFax": zod.string().optional().describe('Leave empty; spam protection')
+})
+
+
+export const getAdminPayingForwardAdsResponseOneTitleMax = 200;
+
+export const getAdminPayingForwardAdsResponseOneImageUrlMax = 2000;
+
+export const getAdminPayingForwardAdsResponseOneLinkUrlMax = 2000;
+
+export const getAdminPayingForwardAdsResponseOneSortOrderMin = 0;
+
+
+
+export const GetAdminPayingForwardAdsResponseItem = zod.object({
+  "title": zod.string().min(1).max(getAdminPayingForwardAdsResponseOneTitleMax),
+  "imageUrl": zod.string().min(1).max(getAdminPayingForwardAdsResponseOneImageUrlMax),
+  "linkUrl": zod.string().max(getAdminPayingForwardAdsResponseOneLinkUrlMax),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number().min(getAdminPayingForwardAdsResponseOneSortOrderMin)
+}).and(zod.object({
+  "id": zod.number()
+}))
+export const GetAdminPayingForwardAdsResponse = zod.array(GetAdminPayingForwardAdsResponseItem)
+
+
+export const createPayingForwardAdBodyTitleMax = 200;
+
+export const createPayingForwardAdBodyImageUrlMax = 2000;
+
+export const createPayingForwardAdBodyLinkUrlMax = 2000;
+
+export const createPayingForwardAdBodySortOrderMin = 0;
+
+
+
+export const CreatePayingForwardAdBody = zod.object({
+  "title": zod.string().min(1).max(createPayingForwardAdBodyTitleMax),
+  "imageUrl": zod.string().min(1).max(createPayingForwardAdBodyImageUrlMax),
+  "linkUrl": zod.string().max(createPayingForwardAdBodyLinkUrlMax),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number().min(createPayingForwardAdBodySortOrderMin)
+})
+
+
+export const UpdatePayingForwardAdParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const updatePayingForwardAdBodyTitleMax = 200;
+
+export const updatePayingForwardAdBodyImageUrlMax = 2000;
+
+export const updatePayingForwardAdBodyLinkUrlMax = 2000;
+
+export const updatePayingForwardAdBodySortOrderMin = 0;
+
+
+
+export const UpdatePayingForwardAdBody = zod.object({
+  "title": zod.string().min(1).max(updatePayingForwardAdBodyTitleMax),
+  "imageUrl": zod.string().min(1).max(updatePayingForwardAdBodyImageUrlMax),
+  "linkUrl": zod.string().max(updatePayingForwardAdBodyLinkUrlMax),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number().min(updatePayingForwardAdBodySortOrderMin)
+})
+
+export const updatePayingForwardAdResponseOneTitleMax = 200;
+
+export const updatePayingForwardAdResponseOneImageUrlMax = 2000;
+
+export const updatePayingForwardAdResponseOneLinkUrlMax = 2000;
+
+export const updatePayingForwardAdResponseOneSortOrderMin = 0;
+
+
+
+export const UpdatePayingForwardAdResponse = zod.object({
+  "title": zod.string().min(1).max(updatePayingForwardAdResponseOneTitleMax),
+  "imageUrl": zod.string().min(1).max(updatePayingForwardAdResponseOneImageUrlMax),
+  "linkUrl": zod.string().max(updatePayingForwardAdResponseOneLinkUrlMax),
+  "isActive": zod.boolean(),
+  "sortOrder": zod.number().min(updatePayingForwardAdResponseOneSortOrderMin)
+}).and(zod.object({
+  "id": zod.number()
+}))
+
+
+export const DeletePayingForwardAdParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+export const getAdminPayingForwardApplicationsResponseOneBusinessNameMax = 200;
+
+export const getAdminPayingForwardApplicationsResponseOneOwnerNameMax = 200;
+
+export const getAdminPayingForwardApplicationsResponseOnePhoneMin = 10;
+export const getAdminPayingForwardApplicationsResponseOnePhoneMax = 30;
+
+export const getAdminPayingForwardApplicationsResponseOneWebsiteUrlMax = 2000;
+
+export const getAdminPayingForwardApplicationsResponseOneServicesMax = 5000;
+
+export const getAdminPayingForwardApplicationsResponseOneAddressMax = 300;
+
+export const getAdminPayingForwardApplicationsResponseOneCityMax = 100;
+
+export const getAdminPayingForwardApplicationsResponseOneStateMin = 2;
+export const getAdminPayingForwardApplicationsResponseOneStateMax = 50;
+
+export const getAdminPayingForwardApplicationsResponseOneZipCodeMin = 5;
+export const getAdminPayingForwardApplicationsResponseOneZipCodeMax = 10;
+
+export const getAdminPayingForwardApplicationsResponseOneCommentsMax = 5000;
+
+
+
+export const GetAdminPayingForwardApplicationsResponseItem = zod.object({
+  "businessName": zod.string().min(1).max(getAdminPayingForwardApplicationsResponseOneBusinessNameMax),
+  "ownerName": zod.string().min(1).max(getAdminPayingForwardApplicationsResponseOneOwnerNameMax),
+  "phone": zod.string().min(getAdminPayingForwardApplicationsResponseOnePhoneMin).max(getAdminPayingForwardApplicationsResponseOnePhoneMax),
+  "hasWebsite": zod.boolean(),
+  "websiteUrl": zod.string().max(getAdminPayingForwardApplicationsResponseOneWebsiteUrlMax),
+  "services": zod.string().min(1).max(getAdminPayingForwardApplicationsResponseOneServicesMax),
+  "address": zod.string().min(1).max(getAdminPayingForwardApplicationsResponseOneAddressMax),
+  "city": zod.string().min(1).max(getAdminPayingForwardApplicationsResponseOneCityMax),
+  "state": zod.string().min(getAdminPayingForwardApplicationsResponseOneStateMin).max(getAdminPayingForwardApplicationsResponseOneStateMax),
+  "zipCode": zod.string().min(getAdminPayingForwardApplicationsResponseOneZipCodeMin).max(getAdminPayingForwardApplicationsResponseOneZipCodeMax),
+  "comments": zod.string().max(getAdminPayingForwardApplicationsResponseOneCommentsMax),
+  "companyFax": zod.string().optional().describe('Leave empty; spam protection')
+}).and(zod.object({
+  "id": zod.number(),
+  "notificationSent": zod.boolean(),
+  "createdAt": zod.coerce.date()
+}))
+export const GetAdminPayingForwardApplicationsResponse = zod.array(GetAdminPayingForwardApplicationsResponseItem)
+
+
+/**
+ * @summary Send an unsent application to the team
+ */
+export const NotifyPayingForwardApplicationParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+
+/**
  * Returns server health status
  * @summary Health check
  */

@@ -13,6 +13,127 @@ tags:
   - name: Storage
     description: Persistent object storage upload and serving endpoints
 paths:
+  /paying-forward/ads:
+    get:
+      operationId: getPayingForwardAds
+      summary: Active Paying Forward advertisements
+      responses:
+        "200":
+          description: Advertisements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PayingForwardAd"
+  /paying-forward/applications:
+    post:
+      operationId: submitPayingForwardApplication
+      summary: Save a business application and notify the team by email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayingForwardApplicationInput"
+      responses:
+        "201":
+          description: Application saved; notificationSent indicates email delivery
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, notificationSent]
+                properties:
+                  id:
+                    type: integer
+                  notificationSent:
+                    type: boolean
+        "400":
+          description: Invalid application
+        "429":
+          description: Too many applications
+  /admin/paying-forward/ads:
+    get:
+      operationId: getAdminPayingForwardAds
+      responses:
+        "200":
+          description: All advertisements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PayingForwardAd"
+    post:
+      operationId: createPayingForwardAd
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayingForwardAdInput"
+      responses:
+        "201":
+          description: Created advertisement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayingForwardAd"
+  /admin/paying-forward/ads/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    put:
+      operationId: updatePayingForwardAd
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PayingForwardAdInput"
+      responses:
+        "200":
+          description: Updated advertisement
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PayingForwardAd"
+    delete:
+      operationId: deletePayingForwardAd
+      responses:
+        "204":
+          description: Deleted advertisement
+  /admin/paying-forward/applications:
+    get:
+      operationId: getAdminPayingForwardApplications
+      responses:
+        "200":
+          description: Applications, newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PayingForwardApplication"
+  /admin/paying-forward/applications/{id}/notify:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    post:
+      operationId: notifyPayingForwardApplication
+      summary: Send an unsent application to the team
+      responses:
+        "200":
+          description: Notification sent
+        "503":
+          description: Email unavailable
   /healthz:
     get:
       operationId: healthCheck
@@ -95,6 +216,94 @@ paths:
                 $ref: "#/components/schemas/ErrorEnvelope"
 components:
   schemas:
+    PayingForwardAdInput:
+      type: object
+      required: [title, imageUrl, linkUrl, isActive, sortOrder]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        imageUrl:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        linkUrl:
+          type: string
+          maxLength: 2000
+        isActive:
+          type: boolean
+        sortOrder:
+          type: integer
+          minimum: 0
+    PayingForwardAd:
+      allOf:
+        - $ref: "#/components/schemas/PayingForwardAdInput"
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: integer
+    PayingForwardApplicationInput:
+      type: object
+      required: [businessName, ownerName, phone, hasWebsite, websiteUrl, services, address, city, state, zipCode, comments]
+      properties:
+        businessName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        ownerName:
+          type: string
+          minLength: 1
+          maxLength: 200
+        phone:
+          type: string
+          minLength: 10
+          maxLength: 30
+        hasWebsite:
+          type: boolean
+        websiteUrl:
+          type: string
+          maxLength: 2000
+        services:
+          type: string
+          minLength: 1
+          maxLength: 5000
+        address:
+          type: string
+          minLength: 1
+          maxLength: 300
+        city:
+          type: string
+          minLength: 1
+          maxLength: 100
+        state:
+          type: string
+          minLength: 2
+          maxLength: 50
+        zipCode:
+          type: string
+          minLength: 5
+          maxLength: 10
+        comments:
+          type: string
+          maxLength: 5000
+        companyFax:
+          type: string
+          description: Leave empty; spam protection
+    PayingForwardApplication:
+      allOf:
+        - $ref: "#/components/schemas/PayingForwardApplicationInput"
+        - type: object
+          required: [id, notificationSent, createdAt]
+          properties:
+            id:
+              type: integer
+            notificationSent:
+              type: boolean
+            createdAt:
+              type: string
+              format: date-time
     HealthStatus:
       type: object
       properties:

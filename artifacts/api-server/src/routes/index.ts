@@ -9,6 +9,7 @@ import aboutUsRouter from "./aboutUs.js";
 import uploadRouter from "./upload.js";
 import propertiesRouter from "./properties.js";
 import storageRouter from "./storage.js";
+import payingForwardRouter from "./payingForward.js";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(aboutUsRouter);
 router.use(uploadRouter);
 router.use(propertiesRouter);
 router.use(storageRouter);
+router.use(payingForwardRouter);
 
 export default router;

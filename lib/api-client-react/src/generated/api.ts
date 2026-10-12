@@ -22,6 +22,11 @@ import type {
 import type {
   ErrorEnvelope,
   HealthStatus,
+  PayingForwardAd,
+  PayingForwardAdInput,
+  PayingForwardApplication,
+  PayingForwardApplicationInput,
+  SubmitPayingForwardApplication201,
   UploadUrlRequest,
   UploadUrlResponse
 } from './api.schemas';
@@ -37,6 +42,561 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
+
+export const getGetPayingForwardAdsUrl = () => {
+
+
+
+
+  return `/api/paying-forward/ads`
+}
+
+/**
+ * @summary Active Paying Forward advertisements
+ */
+export const getPayingForwardAds = async ( options?: RequestInit): Promise<PayingForwardAd[]> => {
+
+  return customFetch<PayingForwardAd[]>(getGetPayingForwardAdsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetPayingForwardAdsQueryKey = () => {
+    return [
+    `/api/paying-forward/ads`
+    ] as const;
+    }
+
+
+export const getGetPayingForwardAdsQueryOptions = <TData = Awaited<ReturnType<typeof getPayingForwardAds>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPayingForwardAds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPayingForwardAdsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPayingForwardAds>>> = ({ signal }) => getPayingForwardAds({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPayingForwardAds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPayingForwardAdsQueryResult = NonNullable<Awaited<ReturnType<typeof getPayingForwardAds>>>
+export type GetPayingForwardAdsQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Active Paying Forward advertisements
+ */
+
+export function useGetPayingForwardAds<TData = Awaited<ReturnType<typeof getPayingForwardAds>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getPayingForwardAds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetPayingForwardAdsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getSubmitPayingForwardApplicationUrl = () => {
+
+
+
+
+  return `/api/paying-forward/applications`
+}
+
+/**
+ * @summary Save a business application and notify the team by email
+ */
+export const submitPayingForwardApplication = async (payingForwardApplicationInput: PayingForwardApplicationInput, options?: RequestInit): Promise<SubmitPayingForwardApplication201> => {
+
+  return customFetch<SubmitPayingForwardApplication201>(getSubmitPayingForwardApplicationUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      payingForwardApplicationInput,)
+  }
+);}
+
+
+
+
+export const getSubmitPayingForwardApplicationMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitPayingForwardApplication>>, TError,{data: BodyType<PayingForwardApplicationInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof submitPayingForwardApplication>>, TError,{data: BodyType<PayingForwardApplicationInput>}, TContext> => {
+
+const mutationKey = ['submitPayingForwardApplication'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof submitPayingForwardApplication>>, {data: BodyType<PayingForwardApplicationInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  submitPayingForwardApplication(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SubmitPayingForwardApplicationMutationResult = NonNullable<Awaited<ReturnType<typeof submitPayingForwardApplication>>>
+    export type SubmitPayingForwardApplicationMutationBody = BodyType<PayingForwardApplicationInput>
+    export type SubmitPayingForwardApplicationMutationError = ErrorType<void>
+
+    /**
+ * @summary Save a business application and notify the team by email
+ */
+export const useSubmitPayingForwardApplication = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof submitPayingForwardApplication>>, TError,{data: BodyType<PayingForwardApplicationInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof submitPayingForwardApplication>>,
+        TError,
+        {data: BodyType<PayingForwardApplicationInput>},
+        TContext
+      > => {
+      return useMutation(getSubmitPayingForwardApplicationMutationOptions(options));
+    }
+
+export const getGetAdminPayingForwardAdsUrl = () => {
+
+
+
+
+  return `/api/admin/paying-forward/ads`
+}
+
+export const getAdminPayingForwardAds = async ( options?: RequestInit): Promise<PayingForwardAd[]> => {
+
+  return customFetch<PayingForwardAd[]>(getGetAdminPayingForwardAdsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminPayingForwardAdsQueryKey = () => {
+    return [
+    `/api/admin/paying-forward/ads`
+    ] as const;
+    }
+
+
+export const getGetAdminPayingForwardAdsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminPayingForwardAds>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminPayingForwardAds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminPayingForwardAdsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminPayingForwardAds>>> = ({ signal }) => getAdminPayingForwardAds({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminPayingForwardAds>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminPayingForwardAdsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminPayingForwardAds>>>
+export type GetAdminPayingForwardAdsQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminPayingForwardAds<TData = Awaited<ReturnType<typeof getAdminPayingForwardAds>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminPayingForwardAds>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminPayingForwardAdsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getCreatePayingForwardAdUrl = () => {
+
+
+
+
+  return `/api/admin/paying-forward/ads`
+}
+
+export const createPayingForwardAd = async (payingForwardAdInput: PayingForwardAdInput, options?: RequestInit): Promise<PayingForwardAd> => {
+
+  return customFetch<PayingForwardAd>(getCreatePayingForwardAdUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      payingForwardAdInput,)
+  }
+);}
+
+
+
+
+export const getCreatePayingForwardAdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPayingForwardAd>>, TError,{data: BodyType<PayingForwardAdInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createPayingForwardAd>>, TError,{data: BodyType<PayingForwardAdInput>}, TContext> => {
+
+const mutationKey = ['createPayingForwardAd'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createPayingForwardAd>>, {data: BodyType<PayingForwardAdInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createPayingForwardAd(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreatePayingForwardAdMutationResult = NonNullable<Awaited<ReturnType<typeof createPayingForwardAd>>>
+    export type CreatePayingForwardAdMutationBody = BodyType<PayingForwardAdInput>
+    export type CreatePayingForwardAdMutationError = ErrorType<unknown>
+
+    export const useCreatePayingForwardAd = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createPayingForwardAd>>, TError,{data: BodyType<PayingForwardAdInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createPayingForwardAd>>,
+        TError,
+        {data: BodyType<PayingForwardAdInput>},
+        TContext
+      > => {
+      return useMutation(getCreatePayingForwardAdMutationOptions(options));
+    }
+
+export const getUpdatePayingForwardAdUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/paying-forward/ads/${id}`
+}
+
+export const updatePayingForwardAd = async (id: number,
+    payingForwardAdInput: PayingForwardAdInput, options?: RequestInit): Promise<PayingForwardAd> => {
+
+  return customFetch<PayingForwardAd>(getUpdatePayingForwardAdUrl(id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      payingForwardAdInput,)
+  }
+);}
+
+
+
+
+export const getUpdatePayingForwardAdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePayingForwardAd>>, TError,{id: number;data: BodyType<PayingForwardAdInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePayingForwardAd>>, TError,{id: number;data: BodyType<PayingForwardAdInput>}, TContext> => {
+
+const mutationKey = ['updatePayingForwardAd'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePayingForwardAd>>, {id: number;data: BodyType<PayingForwardAdInput>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  updatePayingForwardAd(id,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePayingForwardAdMutationResult = NonNullable<Awaited<ReturnType<typeof updatePayingForwardAd>>>
+    export type UpdatePayingForwardAdMutationBody = BodyType<PayingForwardAdInput>
+    export type UpdatePayingForwardAdMutationError = ErrorType<unknown>
+
+    export const useUpdatePayingForwardAd = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePayingForwardAd>>, TError,{id: number;data: BodyType<PayingForwardAdInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updatePayingForwardAd>>,
+        TError,
+        {id: number;data: BodyType<PayingForwardAdInput>},
+        TContext
+      > => {
+      return useMutation(getUpdatePayingForwardAdMutationOptions(options));
+    }
+
+export const getDeletePayingForwardAdUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/paying-forward/ads/${id}`
+}
+
+export const deletePayingForwardAd = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getDeletePayingForwardAdUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getDeletePayingForwardAdMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePayingForwardAd>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deletePayingForwardAd>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['deletePayingForwardAd'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deletePayingForwardAd>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deletePayingForwardAd(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeletePayingForwardAdMutationResult = NonNullable<Awaited<ReturnType<typeof deletePayingForwardAd>>>
+
+    export type DeletePayingForwardAdMutationError = ErrorType<unknown>
+
+    export const useDeletePayingForwardAd = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePayingForwardAd>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deletePayingForwardAd>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getDeletePayingForwardAdMutationOptions(options));
+    }
+
+export const getGetAdminPayingForwardApplicationsUrl = () => {
+
+
+
+
+  return `/api/admin/paying-forward/applications`
+}
+
+export const getAdminPayingForwardApplications = async ( options?: RequestInit): Promise<PayingForwardApplication[]> => {
+
+  return customFetch<PayingForwardApplication[]>(getGetAdminPayingForwardApplicationsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAdminPayingForwardApplicationsQueryKey = () => {
+    return [
+    `/api/admin/paying-forward/applications`
+    ] as const;
+    }
+
+
+export const getGetAdminPayingForwardApplicationsQueryOptions = <TData = Awaited<ReturnType<typeof getAdminPayingForwardApplications>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminPayingForwardApplications>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminPayingForwardApplicationsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminPayingForwardApplications>>> = ({ signal }) => getAdminPayingForwardApplications({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminPayingForwardApplications>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetAdminPayingForwardApplicationsQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminPayingForwardApplications>>>
+export type GetAdminPayingForwardApplicationsQueryError = ErrorType<unknown>
+
+
+
+export function useGetAdminPayingForwardApplications<TData = Awaited<ReturnType<typeof getAdminPayingForwardApplications>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getAdminPayingForwardApplications>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetAdminPayingForwardApplicationsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+
+
+
+export const getNotifyPayingForwardApplicationUrl = (id: number,) => {
+
+
+
+
+  return `/api/admin/paying-forward/applications/${id}/notify`
+}
+
+/**
+ * @summary Send an unsent application to the team
+ */
+export const notifyPayingForwardApplication = async (id: number, options?: RequestInit): Promise<void> => {
+
+  return customFetch<void>(getNotifyPayingForwardApplicationUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getNotifyPayingForwardApplicationMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof notifyPayingForwardApplication>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof notifyPayingForwardApplication>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['notifyPayingForwardApplication'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof notifyPayingForwardApplication>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  notifyPayingForwardApplication(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type NotifyPayingForwardApplicationMutationResult = NonNullable<Awaited<ReturnType<typeof notifyPayingForwardApplication>>>
+
+    export type NotifyPayingForwardApplicationMutationError = ErrorType<void>
+
+    /**
+ * @summary Send an unsent application to the team
+ */
+export const useNotifyPayingForwardApplication = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof notifyPayingForwardApplication>>, TError,{id: number}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof notifyPayingForwardApplication>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+      return useMutation(getNotifyPayingForwardApplicationMutationOptions(options));
+    }
 
 export const getHealthCheckUrl = () => {
 

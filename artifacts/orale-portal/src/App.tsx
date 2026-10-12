@@ -1,4 +1,5 @@
 import { Switch, Route, Router as WouterRouter, Link, useLocation } from "wouter";
+import PayingForward from "@/pages/PayingForward";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   { label: "Business Corner", href: "/business-corner" },
+  { label: "Paying Forward", href: "/paying-forward" },
   { label: "Radio Station", href: "https://osaradio.com/", external: true },
   { label: "For Sale", href: "/for-sale" },
   { label: "Events", href: "/events" },
@@ -57,7 +59,7 @@ function NavBar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden xl:flex items-center gap-6">
             {navLinks.map((link) =>
               link.external ? (
                 <a
@@ -87,7 +89,7 @@ function NavBar() {
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden flex flex-col gap-1.5 p-2"
+            className="xl:hidden flex flex-col gap-1.5 p-2"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -99,7 +101,7 @@ function NavBar() {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <nav className="md:hidden pb-4 flex flex-col gap-4 border-t border-white/10 pt-4">
+          <nav className="xl:hidden pb-4 flex flex-col gap-4 border-t border-white/10 pt-4">
             {navLinks.map((link) =>
               link.external ? (
                 <a
@@ -140,6 +142,7 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/about-us" component={AboutUs} />
         <Route path="/business-corner" component={BusinessCorner} />
+        <Route path="/paying-forward" component={PayingForward} />
         <Route path="/for-sale" component={ForSale} />
         <Route path="/for-sale/:id" component={PropertyDetail} />
         <Route path="/events" component={Events} />

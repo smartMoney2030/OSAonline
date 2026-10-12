@@ -4,3 +4,5 @@ export * from "./contact_submissions";
 export * from "./businessSubmissions";
 export * from "./siteSettings";
 export * from "./properties";
+export * from "./payingForwardAds";
+export * from "./payingForwardApplications";

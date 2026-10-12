@@ -8,6 +8,11 @@
 
 export * from './errorEnvelope';
 export * from './healthStatus';
+export * from './payingForwardAd';
+export * from './payingForwardAdInput';
+export * from './payingForwardApplication';
+export * from './payingForwardApplicationInput';
+export * from './submitPayingForwardApplication201';
 export * from './uploadUrlRequest';
 export * from './uploadUrlRequestContentType';
 export * from './uploadUrlResponse';

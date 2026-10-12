@@ -35,6 +35,7 @@ router.get("/sitemap.xml", async (req, res) => {
       { loc: `${base}/events`, priority: "0.9", changefreq: "weekly" },
       { loc: `${base}/for-sale`, priority: "0.9", changefreq: "daily" },
       { loc: `${base}/business-corner`, priority: "0.8", changefreq: "weekly" },
+      { loc: `${base}/paying-forward`, priority: "0.8", changefreq: "weekly" },
     ];
 
     const eventUrls = events.map((e) => ({

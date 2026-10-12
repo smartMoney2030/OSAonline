@@ -5,6 +5,84 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface PayingForwardAdInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  imageUrl: string;
+  /** @maxLength 2000 */
+  linkUrl: string;
+  isActive: boolean;
+  /** @minimum 0 */
+  sortOrder: number;
+}
+
+export type PayingForwardAd = PayingForwardAdInput & {
+  id: number;
+};
+
+export interface PayingForwardApplicationInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  businessName: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  ownerName: string;
+  /**
+     * @minLength 10
+     * @maxLength 30
+     */
+  phone: string;
+  hasWebsite: boolean;
+  /** @maxLength 2000 */
+  websiteUrl: string;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  services: string;
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  address: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  city: string;
+  /**
+     * @minLength 2
+     * @maxLength 50
+     */
+  state: string;
+  /**
+     * @minLength 5
+     * @maxLength 10
+     */
+  zipCode: string;
+  /** @maxLength 5000 */
+  comments: string;
+  /** Leave empty; spam protection */
+  companyFax?: string;
+}
+
+export type PayingForwardApplication = PayingForwardApplicationInput & {
+  id: number;
+  notificationSent: boolean;
+  createdAt: string;
+};
+
 export interface HealthStatus {
   status: string;
 }
@@ -39,4 +117,9 @@ export interface UploadUrlResponse {
 export interface ErrorEnvelope {
   error: string;
 }
+
+export type SubmitPayingForwardApplication201 = {
+  id: number;
+  notificationSent: boolean;
+};
 
